@@ -10,20 +10,19 @@ class Vehicle(db.Model):
     plateno = db.Column(db.String(8), primary_key= True)
     brand = db.Column(db.String(20), nullable=False)
     model = db.Column(db.String(50), nullable=False)
-    vehiclestatus = db.Column(db.String(50), nullable=False)
-    latitude = db.Column(db.Float(precision=2), nullable=False)
-    longitude = db.Column(db.Float(precision=2),nullable=False)
+    vehiclestatus = db.Column(db.String(20), nullable=False)
+    parkingspotname = db.Column(db.String(50), nullable=False)
+    
 
-    def __init__(self,plateno,brand,model,vehiclestatus,latitude,longitude):
+    def __init__(self,plateno,brand,model,vehiclestatus,parkingspotname):
         self.plateno = plateno
         self.brand = brand
         self.model = model
         self.vehiclestatus = vehiclestatus
-        self.latitude = latitude
-        self.longitude = longitude
+        self.parkingspotname = parkingspotname
 
     def json(self):
-        return {"PlateNo": self.plateno, "Brand": self.brand, "Model": self.model, "VehicleStatus": self.vehiclestatus, "Latitude": self.latitude, "Longitude": self.longitude}
+        return {"PlateNo": self.plateno, "Brand": self.brand, "Model": self.model, "VehicleStatus": self.vehiclestatus, "ParkingSpotName": self.parkingspotname}
     
 
 
@@ -71,7 +70,7 @@ def get_all():
     ),404
 
 @app.route("/rentalvehicle/<string:brand>")
-def find_by_brand(brand):
+def get_by_brand(brand):
     vehiclelist = Vehicle.query.filter_by(brand=brand).all()
     if len(vehiclelist):
         return jsonify(
