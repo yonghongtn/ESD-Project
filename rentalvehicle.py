@@ -12,17 +12,24 @@ class Vehicle(db.Model):
     model = db.Column(db.String(50), nullable=False)
     vehiclestatus = db.Column(db.String(20), nullable=False)
     parkingspotname = db.Column(db.String(50), nullable=False)
+    price = db.Column(db.Float(precision="2"), nullable=False)
+    latitude = db.Column(db.Float(precision="2"), nullable=False)
+    longitude = db.Column(db.Float(precision="2"), nullable=False)
     
 
-    def __init__(self,plateno,brand,model,vehiclestatus,parkingspotname):
+    def __init__(self,plateno,brand,model,vehiclestatus,parkingspotname,price,latitude,longitude):
         self.plateno = plateno
         self.brand = brand
         self.model = model
         self.vehiclestatus = vehiclestatus
         self.parkingspotname = parkingspotname
+        self.price = price
+        self.latitude = latitude
+        self.longitude = longitude
+        
 
     def json(self):
-        return {"PlateNo": self.plateno, "Brand": self.brand, "Model": self.model, "VehicleStatus": self.vehiclestatus, "ParkingSpotName": self.parkingspotname}
+        return {"PlateNo": self.plateno, "Brand": self.brand, "Model": self.model, "VehicleStatus": self.vehiclestatus, "ParkingSpotName": self.parkingspotname, "Price": self.price, "Latitude": self.latitude, "Longitude": self.longitude}
     
 
 
