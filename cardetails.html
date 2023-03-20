@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Find A Vechcle</title>
+        <title>Car Details</title>
         <!-- favicon -->
         <link href="img/DrivEz_logo.png" rel="icon">
 
@@ -17,11 +17,7 @@
         <!-- Axios -->
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
-        <script>
-            
-        </script>
-        <!-- Set Session Storage, if not redirect to other pages -->
-        <script src="js/setSessionStorage.js"></script>
+        
     </head>
     <body>
         <div id="app">
@@ -55,54 +51,41 @@
             <div class="container">
                 <div class="row mb-4">
                     <div class="col-12">
-                        <h1 class="text-center display-4">Find A Vehicle To Rent</h1>
+                        <h1 class="text-center display-4">Car Details</h1>
+                        <button class="btn btn-danger" @click="goBack()">Go Back To Listing</button> &nbsp; 
                     </div>
                 </div>
                 <div class="row mb-3 fs-4">
-                    <div class="col-12 text-center">
-                        Location: 
-                        <select v-model="location_selected">
-                            <option v-for="location of locations" :value="location">{{location}}</option>
-                        </select>
-                       <br>
-                        Sort by: 
-                        <select v-model="filter_selected">
-                            <option v-for="filter of filters" :value="filter">{{filter}}</option>
-                        </select>   
+                    <div class="col-12 col-md-6 col-xl-8 fs-3">
+                        Location: {{location}} <br>
+                        Brand: {{brand}} <br>
+                        Model: {{model}} <br>
+                        Price per hour: {{price}} <br>
+                        Hours booked: <input type="number" min="0.5" step="0.5" v-model="hours_booked"><br>
+                        Total Price: ${{hours_booked*price}} <br>
+                        <button class="btn btn-success" @click="bookVehicle()">Book Car</button>
+                    </div>
+                    <div class="col-12 col-md-6 col-xl-4">
+                        <img :src="imgsrc" alt="Car Image" class="img-fluid">
                     </div>
                 </div>
+                <!-- Reserved for google maps API to display car location -->
                 <div class="row">
-                    <table class="table table-striped table-hover text-center">
-                        <tr>
-                            <th>Location</th>
-                            <th>Brand</th>
-                            <th>Model</th>
-                            <th>Plate Number</th>
-                            <th>Price/hour</th>
-                            <th>Details</th>
-                        </tr>
-                        <tr v-for="vehicle of displayedVehicles">
-                            <td>{{vehicle.location}}</td>
-                            <td>{{vehicle.brand}}</td>
-                            <td>{{vehicle.model}}</td>
-                            <td>{{vehicle.plateNo}}</td>
-                            <td>{{vehicle.price}}</td>
-                            <td><button class="btn-success btn" @click="showDetails(vehicle)">Details</button></td>
-                        </tr>
-                    </table>
+                    
                 </div>
             </div>
         </div>
+        
         <!-- Set username + logout script-->
         <script>
             document.getElementById("username").innerText = "Welcome, " + sessionStorage.getItem("username") + "!";
             function logout(){
                 sessionStorage.clear();
             }   
-
         </script>
-        <!-- Filter script -->
-        <script src="js/filter.js"></script>
+        <!-- Car Details Vue App -->
+        <script src="js/cardetails.js"></script>
+
         <!-- Bootstrap JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
 
