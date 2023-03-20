@@ -52,7 +52,17 @@ const app = Vue.createApp({
         }
     },
     methods: {
-
+        showDetails(vehicle){
+            /* Set session storage to vehicle to view */
+            console.log(vehicle)
+            sessionStorage.setItem("vehicle_to_view_plateno", vehicle.plateNo)
+            sessionStorage.setItem("vehicle_to_view_brand", vehicle.brand)
+            sessionStorage.setItem("vehicle_to_view_model", vehicle.model)
+            sessionStorage.setItem("vehicle_to_view_location", vehicle.location)
+            sessionStorage.setItem("vehicle_to_view_price", vehicle.price)
+            /* Redirect to view vehicle page */
+            window.location.href = "cardetails.html"
+        }
     }
 });
 
