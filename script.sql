@@ -63,3 +63,11 @@ create table parkingSpot
 Name varchar(255) not null,
 Latitude float not null,
 Longitude float not null);
+
+-- insert values into parkingspot table
+INSERT INTO parkingspot(name, latitude, longitude) VALUES
+('SCIS', 1.42681, 103.836),
+('LKCSOB', 1.40145, 103.818),
+('YPHSOL', 1.37427, 103.846),
+('SOA', 1.29924, 103.854),
+('SOSS', 1.2968, 103.845);
