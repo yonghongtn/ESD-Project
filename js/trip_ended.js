@@ -1,4 +1,4 @@
-/* This is for booking */
+/* This is for trip ended */
 const app = Vue.createApp({
     data() {
         return {
@@ -6,7 +6,7 @@ const app = Vue.createApp({
     },
     methods:{
         redirect(){
-            window.location.href = "upload_qr.html"
+            window.location.href = "index.html"
         }
     }
 })
