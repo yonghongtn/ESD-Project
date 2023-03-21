@@ -14,8 +14,8 @@
      <!-- Vue 3 -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
-    <!-- Axios -->
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- JQuery-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <!-- Redirect to other pages if not correct status. Not done yet-->
     <script>
         if (sessionStorage["status"] != null){
@@ -43,7 +43,7 @@
                     
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <h4 class="mx-1">Report Fault</a></h4>
+                            <h4 class="mx-1"><a href="report_fault.html">Report Fault</a></h4>
                         </li>
                         <li class="nav-item">
                             <h4 class="mx-1" id="username">Welcome!</a></h4>
@@ -56,6 +56,35 @@
                 </div>
             </div>
         </nav>
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h1 class="text-center display-4">Booking Details</h1>
+                    <button class="btn btn-warning fs-4">End Trip</button>&nbsp;
+                    <button class="btn btn-primary fs-4" @click="redirect()">Scan QR Code To End Trip</button>
+                </div>
+            </div>
+            <!-- Failure message when verification of current location fails -->
+            <div class="fs-4" v-show="false">
+                Sorry, you are not near any parking spot right now. Please find a parking spot that is nearby and try again. Alternatively, you can use the QR code verification method.
+            </div>
+            <div class="row mb-3 fs-4">
+                <div class="col-12 col-md-6 col-xl-8 fs-3">
+                    Plate Number: {{PlateNo}} <br>
+                    Brand: {{Brand}} <br>
+                    Model: {{Model}} <br>
+                    Hours booked: {{HoursBooked}} <br>
+                    Booking until: {{ExpectedEndTime}} <br>
+                </div>
+                <div class="col-12 col-md-6 col-xl-4">
+                    <img :src="imgsrc" alt="Car Image" class="img-fluid">
+                </div>
+            </div>
+            <!-- Reserved for google maps API to display car location and parking spots-->
+            <div class="row">
+                <div class="col-12"></div>
+            </div>
+        </div>
         
     </div>
     <!-- Set username on banner + logout script-->
@@ -66,8 +95,8 @@
         }   
 
     </script>
-    <!-- Filter script -->
-    <script src="js/filter.js"></script>
+    <!-- Vue script -->
+    <script src="js/booking.js"></script>
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
 
