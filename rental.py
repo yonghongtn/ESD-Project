@@ -1,11 +1,11 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from sqlalchemy import func
 from datetime import datetime
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/rentaltrip'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3308/rentaltrip'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -47,13 +47,15 @@ class Rental(db.Model):
                 "BookingDuration": self.BookingDuration,
                 "TotalFare": self.TotalFare}
     
-@app.route("/rental/<DriverID>/<PlateNo>/<StartLocation>/<BookingDuration>/<TotalFare>", methods=['POST'])
-def create_trip(DriverID, PlateNo, StartLocation, BookingDuration, TotalFare):
+# @app.route("/rental/<DriverID>/<PlateNo>/<StartLocation>/<BookingDuration>/<TotalFare>", methods=['POST'])
+@app.route("/rental", methods=['POST'])
+def create_trip():
 
-    trip = Rental(DriverID, PlateNo, func.now(), StartLocation, BookingDuration, TotalFare)
-
+   # trip = Rental(DriverID, PlateNo, func.now(), StartLocation, BookingDuration, TotalFare)
+    trip = request.get_json()
+    rental = Rental(trip["DriverID"], trip["PlateNo"], func.now(), trip["StartLocation"], trip["BookingDuration"], trip["TotalFare"])
     try:
-        db.session.add(trip)
+        db.session.add(rental)
         db.session.commit()
     except:
         return jsonify(
@@ -143,4 +145,4 @@ def end_trip(RentalID, EndLocation):
 
 
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    app.run(port=5001, debug=True)
