@@ -6,6 +6,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/rentaltrip'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/rentaltrip'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -46,12 +47,12 @@ class Rental(db.Model):
                 "EndLocation": self.EndLocation,
                 "BookingDuration": self.BookingDuration,
                 "TotalFare": self.TotalFare}
-    
-@app.route("/rental/<DriverID>/<PlateNo>/<StartLocation>/<BookingDuration>/<TotalFare>", methods=['POST'])
-def create_trip(DriverID, PlateNo, StartLocation, BookingDuration, TotalFare):
 
-    trip = Rental(DriverID, PlateNo, func.now(), StartLocation, BookingDuration, TotalFare)
+@app.route("/rental", methods=['POST'])
+def create_trip():
 
+    trip = request.get_json()
+    rental = Rental(trip["DriverID"], trip["PlateNo"], func.now(), trip["StartLocation"], trip["BookingDuration"], trip["TotalFare"])
     try:
         db.session.add(trip)
         db.session.commit()
@@ -70,8 +71,10 @@ def create_trip(DriverID, PlateNo, StartLocation, BookingDuration, TotalFare):
         }
     ), 201
 
-@app.route("/rental/<RentalID>/<PlateNo>", methods=['PUT'])
-def change_car(RentalID, PlateNo):
+@app.route("/rental/<RentalID>", methods=['PUT'])
+def change_car(RentalID):
+
+    PlateNo = request.get_json()["PlateNo"]
     trip = Rental.query.filter_by(RentalID=RentalID).first()
 
     if trip:
@@ -105,8 +108,10 @@ def change_car(RentalID, PlateNo):
             }
         ), 404
 
-@app.route("/rental/endtrip/<RentalID>/<EndLocation>", methods=['PUT'])
-def end_trip(RentalID, EndLocation):
+@app.route("/rental/endtrip/<RentalID>", methods=['PUT'])
+def end_trip(RentalID):
+
+    EndLocation = request.get_json()["EndLocation"]
     trip = Rental.query.filter_by(RentalID=RentalID).first()
 
     if trip:

@@ -33,7 +33,22 @@ INSERT INTO vehicle VALUES
 ('SGK4321D', 'Honda', 'Civic', 'Available', 'LKCSOB', 2000, 1.40145, 103.818),
 ('SGL9987H', 'Mercedes-Benz', 'GLA-Class', 'Available', 'YPHSOL', 3000, 1.37427, 103.846),
 ('SGX1234A', 'Hyundai', 'Avante', 'Available', 'SOA', 4000, 1.29924, 103.854),
-('SGY9876B', 'Toyota', 'Wish', 'Available', 'SOSS', 5000, 1.2968, 103.845);
+('SGY9876B', 'Toyota', 'Wish', 'Available', 'SOSS', 5000, 1.2968, 103.845),
+('SGA2346C', 'Nissan', 'X-Trail', 'Unavailable', 'SCIS', 2000, 1.42681, 103.836),
+('SGK4322D', 'BMW', '3 Series', 'Available', 'LKCSOB', 3000, 1.40145, 103.818),
+('SGL9988H', 'Volkswagen', 'Jetta', 'Unavailable', 'YPHSOL', 4000, 1.37427, 103.846),
+('SGX1235A', 'Audi', 'A4', 'Available', 'Available', 'SOA', 5000, 1.29924, 103.854),
+('SGY9877B', 'Toyota', 'Corolla', 'Unavailable', 'SOSS', 6000, 1.2968, 103.845),
+('SGA2347C', 'Nissan', 'X-Trail', 'Available', 'SCIS', 7000, 1.42681, 103.836),
+('SGK4323D', 'Volkswagen', 'Jetta', 'Unavailable', 'LKCSOB', 8000, 1.40145, 103.818),
+('SGL9989H', 'Mercedes-Benz', 'CLA-Class', 'Available', 'YPHSOL', 9000, 1.37427, 103.846),
+('SGX1236A', 'Hyundai', 'Ioniq Hybrid', 'Unavailable', 'SOA', 10000, 1.29924, 103.854),
+('SGY9878B', 'Toyota', 'Camry', 'Available', 'SOSS', 11000, 1.2968, 103.845),
+('SGA2348C', 'Kia', 'Sorento', 'Unavailable', 'SCIS', 12000, 1.42681, 103.836),
+('SGK4324D', 'Honda', 'City', 'Available', 'LKCSOB', 13000, 1.40145, 103.818),
+('SGL9990H', 'Mercedes-Benz', 'E-Class', 'Unavailable', 'YPHSOL', 14000, 1.37427, 103.846),
+('SGX1237A', 'BMW', '3 Series', 'Available', 'SOA', 15000, 1.29924, 103.854),
+('SGY9879B', 'Toyota', 'Vios', 'Unavailable', 'SOSS', 16000, 1.2968, 103.845);
 
 -- create RentalTrip DB
 drop schema if exists RentalTrip;
