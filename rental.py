@@ -68,7 +68,7 @@ def create_trip():
     return jsonify(
         {
             "code": 201,
-            "data": trip.json()
+            "data": rental.json()
         }
     ), 201
 
