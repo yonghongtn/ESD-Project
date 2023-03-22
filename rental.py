@@ -1,11 +1,10 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from sqlalchemy import func
 from datetime import datetime
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/rentaltrip'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/rentaltrip'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -54,7 +53,7 @@ def create_trip():
     trip = request.get_json()
     rental = Rental(trip["DriverID"], trip["PlateNo"], func.now(), trip["StartLocation"], trip["BookingDuration"], trip["TotalFare"])
     try:
-        db.session.add(trip)
+        db.session.add(rental)
         db.session.commit()
     except:
         return jsonify(
