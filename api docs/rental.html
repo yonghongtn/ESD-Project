@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rental API Documentation</title>
+</head>
+<body>
+    <h1>Rental API v1.0 - Documentation</h1>
+    
+    <hr>
+    <h2>trip creation</h2>
+    <b>Description</b><br>
+    Inserts a trip record into the database and returns a JSON object containing the trip's details.
+    <br><br>
+    <b>Input</b>
+
+<pre><code>{
+    "DriverID": 1,
+    "PlateNo": "SMU1234A",
+    "StartLocation": 1,
+    "BookingDuration": 2.5,
+    "TotalFare": 15.25
+}</code></pre>
+
+    <p>
+        <b>HTTP request</b>
+        <br>
+        <font color="red" face="courier">POST
+            <font color="blue">http://127.0.0.1:5001/rental</font>
+        </font>
+    </p>
+
+    <hr>
+    <h2>vehicle update</h2>
+    <b>Description</b><br>
+    Change the vehicle given the rental ID.
+    <br><br>
+    <b>Input</b>
+
+<pre><code>{
+    "PlateNo": "SMU1234A"
+}</code></pre>
+
+    <p>
+        <b>HTTP request</b>
+        <br>
+        <font color="red" face="courier">PUT
+            <font color="blue">http://127.0.0.1:5001/rental/1</font>
+        </font>
+        <br>
+        where the last parameter value is an integer which represents the rental ID.
+    </p>
+
+    <hr>
+    <h2>end trip</h2>
+    <b>Description</b><br>
+    Ends the trip given the rental ID.
+    <br><br>
+    <b>Input</b>
+
+<pre><code>{
+    "EndLocation": 1
+}</code></pre>
+
+    <p>
+        <b>HTTP request</b>
+        <br>
+        <font color="red" face="courier">PUT
+            <font color="blue">http://127.0.0.1:5001/rental/endtrip/1</font>
+        </font>
+        <br>
+        where the last parameter value is an integer which represents the trip ID.
+    </p>
+    <hr>
+</body>
+</html>
