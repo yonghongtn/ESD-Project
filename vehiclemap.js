@@ -28,7 +28,7 @@ function initMap() {
         );
       }
     // Creates the second marker, positioned at target location
-    const image = "images/vehicle.png"
+    const image = "img/vehicle.png"
     const targetmarker = new google.maps.Marker({
     position: target,
     map: map,
