@@ -11,11 +11,12 @@ gmaps = googlemaps.Client(key = 'AIzaSyAWm0apf-es3-DdJCkC-RimWitR5x2kFrw')
 #these functions return the distance between two points in meters
 #without the code '["rows"][0]["elements"][0]["distance"]["value"]',
 #it returns a json with all the information this api is capable of returning
-#see the bottom of the page for an example of the full json
-@app.route('/gmaps/vehicledistance/<latorigin>/<lngorigin>/<latdestination>/<lngdestination>')
-def vehicledistance(latorigin, lngorigin, latdestination, lngdestination):
-    origin = (latorigin, lngorigin)
-    destination = (latdestination, lngdestination)
+#see the bottom of the page for an example of the input and the full output of this function
+@app.route('/gmaps/vehicledistance/', methods=['GET','POST'])
+def vehicledistance():
+    startend = request.get_json()
+    origin = (startend["start"]["lat"], startend["start"]["lng"])
+    destination = (startend["end"]["lat"], startend["end"]["lng"])
     distance = gmaps.distance_matrix(origin, destination, mode='walking')["rows"][0]["elements"][0]["distance"]["value"]
     return jsonify(
         {
@@ -24,10 +25,11 @@ def vehicledistance(latorigin, lngorigin, latdestination, lngdestination):
         }
     )
 
-@app.route('/gmaps/parkingdistance/<latorigin>/<lngorigin>/<latdestination>/<lngdestination>')
-def parkingdistance(latorigin, lngorigin, latdestination, lngdestination):
-    origin = (latorigin, lngorigin)
-    destination = (latdestination, lngdestination)
+@app.route('/gmaps/parkingdistance/', methods=['GET','POST'])
+def parkingdistance():
+    startend = request.get_json()
+    origin = (startend["start"]["lat"], startend["start"]["lng"])
+    destination = (startend["end"]["lat"], startend["end"]["lng"])
     distance = gmaps.distance_matrix(origin, destination, mode='driving')["rows"][0]["elements"][0]["distance"]["value"]
     return jsonify(
         {
@@ -40,7 +42,19 @@ def parkingdistance(latorigin, lngorigin, latdestination, lngdestination):
 if __name__ == '__main__':
     app.run(debug = True, port = 5000)
 
-# Example of the full json returned by the api
+# Example of a json input taken in by the function
+# {
+#     "start" : {
+#         "lat" : 1.42681,
+#         "lng" : 103.836
+#     },
+#     "end" : {
+#         "lat" : 1.40145,
+#         "lng" : 103.818
+#     }
+# }
+
+# Example of the full json output returned by the api
 # {
 #     "code": 200,
 #     "distance": {
