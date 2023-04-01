@@ -102,7 +102,7 @@ def get_by_brand(brand):
 
 
 
-@app.route("/rentalvehicle/update/<string:plateno>", methods=['PUT'])
+@app.route("/rentalvehicle/updatebooked/<string:plateno>", methods=['PUT'])
 def update_vehicle(plateno):
     vehicle = Vehicle.query.filter_by(plateno=plateno).first()
     if vehicle:
@@ -124,6 +124,41 @@ def update_vehicle(plateno):
                     },
                     "message": "Vehicle not found."
                 }
-            ), 404   
+            ), 404
+""" 
+Accepts a JSON object with the following attributes:
+{
+    "parkingspotname": "Parking Spot 1",
+    "latitude": 1.2345,
+    "longitude": 1.2345
+}
+ """
+@app.route("/rentalvehicle/updateavailable/<string:plateno>", methods=['PUT'])
+def update_vehicle_available(plateno):
+    update = request.get_json()
+    vehicle = Vehicle.query.filter_by(plateno=plateno).first()
+    if vehicle:
+        try:
+            vehicle.vehiclestatus = 'Available'
+            vehicle.parkingspotname = update["parkingspotname"]
+            vehicle.latitude = update["latitude"]
+            vehicle.longitude = update["longitude"]
+            db.session.commit()
+            return jsonify(
+                    {
+                        "code": 201,
+                        "data": vehicle.json()
+                    }
+                ),201
+        except:
+            return jsonify(
+                    {
+                        "code": 404,
+                        "data": {
+                            "plateno": plateno
+                        },
+                        "message": "Vehicle not found."
+                    }
+                ), 404      
 if __name__ == '__main__':
-    app.run(port=5000,debug=True)
+    app.run(port=5003,debug=True)
