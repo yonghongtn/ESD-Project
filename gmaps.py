@@ -1,31 +1,36 @@
 from flask_cors import CORS
 from flask import Flask, jsonify, request
 import googlemaps
-
+import requests
 
 app = Flask(__name__)
 CORS(app)
 
 gmaps = googlemaps.Client(key = 'AIzaSyAWm0apf-es3-DdJCkC-RimWitR5x2kFrw')
 
-#these functions return the distance between two points in meters
-#without the code '["rows"][0]["elements"][0]["distance"]["value"]',
-#it returns a json with all the information this api is capable of returning
-#see the bottom of the page for an example of the input and the full output of this function
+#returns the distances each of the pairs of start points and the end point
 @app.route('/gmaps/vehicledistance/', methods=['GET','POST'])
 def vehicledistance():
     startend = request.get_json()
-    origin = (startend["start"]["lat"], startend["start"]["lng"])
+    origins = []
+    for origin in startend["start"]:
+        origins.append((origin["lat"], origin["lng"]))
     destination = (startend["end"]["lat"], startend["end"]["lng"])
-    distance = gmaps.distance_matrix(origin, destination, mode='walking')["rows"][0]["elements"][0]["distance"]["value"]
+    distance = gmaps.distance_matrix(origins, destination, mode='walking')
+    print(distance)
+    distances = distance["rows"]
+    distances_to_return = []
+    for distance in distances:
+        distances_to_return.append(distance["elements"][0]["distance"]["value"])
+    print("distances_to_return: ", distances_to_return)
     return jsonify(
         {
             "code": 200,
-            "distance": distance
+            "distance": distances_to_return
         }
     )
 
-@app.route('/gmaps/parkingdistance/', methods=['GET','POST'])
+""" @app.route('/gmaps/parkingdistance/', methods=['GET','POST'])
 def parkingdistance():
     startend = request.get_json()
     origin = (startend["start"]["lat"], startend["start"]["lng"])
@@ -36,11 +41,11 @@ def parkingdistance():
             "code": 200,
             "distance": distance
         }
-    )
+    ) """
 
 
 if __name__ == '__main__':
-    app.run(debug = True, port = 5000)
+    app.run(debug = True, port = 5002)
 
 # Example of a json input taken in by the function
 # {
