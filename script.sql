@@ -7,6 +7,7 @@ use RentalReports;
 create table reports
 (ReportID int not null auto_increment primary key,
 DriverID int not null,
+RentalID int not null,
 PlateNo varchar(8) not null,
 Outcome varchar(255) not null,
 Content varchar(255) not null);
