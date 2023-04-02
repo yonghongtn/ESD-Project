@@ -72,3 +72,27 @@ INSERT INTO parkingspot(name, latitude, longitude) VALUES
 ('YPHSOL', 1.37427, 103.846),
 ('SOA', 1.29924, 103.854),
 ('SOSS', 1.2968, 103.845);
+
+--create Report DB
+drop schema if exists Report;
+create schema Report;
+use Report;
+
+--create rentalreport table
+CREATE TABLE IF NOT EXISTS `rentalreport` (
+  `ReportID` int NOT NULL AUTO_INCREMENT,
+  `DriverID` int NOT NULL,
+  `PlateNo` varchar(8) NOT NULL,
+  `Outcome` varchar(100) NOT NULL,
+  `Content` varchar(1000) NOT NULL,
+  PRIMARY KEY (`ReportID`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--insert data into rentalreport table
+INSERT INTO `rentalreport` (`ReportID`, `DriverID`, `PlateNo`, `Outcome`, `Content`) VALUES
+(1, 1, 'SGA1234B', 'Success', 'Successfully created the report'),
+(2, 1, 'SGB2345C', 'Failure', 'Fail to create the report'),
+(3, 1, 'SGC3456J', 'Success', 'Create the report successfully'),
+(4, 1, 'SGX4567E', 'Failure', 'Fail to create the report'),
+(5, 1, 'SGH5678G', 'Success', 'Create the report successfully');
+COMMIT;
