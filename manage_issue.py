@@ -28,13 +28,13 @@ def manage_issue():
     # Simple check of input format and data of the request are JSON
     if request.is_json:
         try:
+            # Get the JSON data from the POST request
             full_report = request.get_json()
             report = full_report["Report"]
             payment_id = full_report["PaymentID"]
             current_location = full_report["Current Location"]
             print("\nReceived an report in JSON:", report)
-            # do the actual work
-            # 1. Send order info {cart items}
+            #calls the appropriate function based on the outcome of the report
             if report["Outcome"] == "Refund":
                 result = process_refund(report, payment_id)
             else:
@@ -162,10 +162,11 @@ def replace_vehicle(report, current_location):
     print('\n-----Invoking vehicle microservice-----')
     get_vehicle_url = "http://localhost:5003/rentalvehicle/"
     try:
-        #get available vehicles
+        #get all vehicles
         get_vehicle_result = invoke_http(get_vehicle_url, method='GET')
         all_vehicles = get_vehicle_result['data']['vehicles']
         print('All vehicles retrieved successfully', all_vehicles)
+        #filter available vehicles
         available_vehicles = []
         for vehicle in all_vehicles:
             if vehicle["VehicleStatus"] == "Available":
@@ -178,6 +179,7 @@ def replace_vehicle(report, current_location):
             }
     #get browser location, code below is to be changed after UI integration
 
+    #compile list of available vehicle locations
     origins = []
     for vehicle in available_vehicles:
         origins.append({'lat': vehicle['Latitude'], 'lng': vehicle['Longitude']})
@@ -192,6 +194,7 @@ def replace_vehicle(report, current_location):
     for origin in startend["start"]:
         origins.append((origin["lat"], origin["lng"]))
     destination = (startend["end"]["lat"], startend["end"]["lng"])
+    #get distances from browser location to all available vehicles
     try:
         distance = gmaps.distance_matrix(origins, destination, mode='walking')
     except:
@@ -199,6 +202,7 @@ def replace_vehicle(report, current_location):
                 "code": 500,
                 "message": "An error occurred in the Google Maps API."
             }
+    #get vehicle with shortest distance
     distances = distance["rows"]
     shortest_distance = 10000000000000000000000000000000000000000000000000000000000000000
     for i in range(len(distances)):
