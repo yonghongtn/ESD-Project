@@ -143,6 +143,41 @@ def end_trip(RentalID, EndLocation):
             }
         ), 404
 
+@app.route("/rental/canceltrip/<RentalID>", methods=['PUT'])
+def cancel_trip(RentalID):
+    trip = Rental.query.filter_by(RentalID=RentalID).first()
+    if trip:
+        try:
+            trip.EndLocation = trip.StartLocation
+            trip.EndTime = datetime.now()
+            db.session.commit()
+            return jsonify(
+                {
+                    "code": 201,
+                    "data": trip.json()
+                }
+            ), 201
+        except:
+            return jsonify(
+                {
+                    "code": 500,
+                    "data": {
+                        "RentalID": RentalID
+                    },
+                    "message": "An error occurred when updating the vehicle for trip id {}".format(RentalID)
+                }
+            ), 500
+    else:
+        return jsonify(
+            {
+                "code": 404,
+                "data": {
+                    "RentalID": RentalID
+                },
+                "message": "Trip not found."
+            }
+        ), 404
+
 
 if __name__ == '__main__':
     app.run(port=5001, debug=True)
