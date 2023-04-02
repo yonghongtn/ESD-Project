@@ -3,20 +3,38 @@
 import os
 from twilio.rest import Client
 
+from flask_cors import CORS
+from flask import Flask, jsonify
+
+app = Flask(__name__)
+CORS(app)
+
+
 def send_txt_message (destination: str, message: str) :
     # Find these values at https://twilio.com/user/account
     # To set up environmental variables, see http://twil.io/secure
+
+    # Need to pre set environment variables in windows computer first in order to work 
     account_sid = os.environ['TWILIO_ACCOUNT_SID']
     auth_token = os.environ['TWILIO_AUTH_TOKEN']
+
     client = Client(account_sid, auth_token)
     
     message = client.messages.create(body=message, from_="+15073535295", to=destination)
 
-    print (message.sid)
+    #print (message.sid)
+    return jsonify({'message': 'Message sent successfully!'})
 
-def main() :
-    send_txt_message("+6591504834", "Hello, You")
+@app.route('/Twilio/send_txt_message/<destination>')
+def main(destination) :
+    
+    hpnum = '+6581015785'
+    msg = 'Your refund has been confirmed and send. Please check your bank account these few weeks. If there are any clarification or questions you have, do feel free to contact us. Thank you.'
+    send_txt_message(destination, msg)
+
+    return jsonify({'message': 'Message sent successfully!'})
 
 
 if __name__ == "__main__" :
-    main()
+    #main()
+    app.run(port=5000, debug=True)
