@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-
+from flask import *
 import os, sys
 
 import requests
@@ -8,8 +8,19 @@ from invokes import invoke_http
 
 app = Flask(__name__)
 CORS(app)
-rentalvehicle_url = "http://localhost:5000/rentalvehicle"
+vehicle_url = "http://localhost:5003/rentalvehicle/updatebooked/"
 rental_url = "http://localhost:5001/rental"
+
+""" 
+Takes in a JSON of the format:
+{
+    "DriverID": 1,
+    "PlateNo": "ABC1234D",
+    "BookingDuration": 2,
+    "TotalFare": 2000,
+    "StartLocation": 1,
+}
+ """
 
 @app.route("/place_booking", methods=['POST'])
 def place_booking():
@@ -20,7 +31,6 @@ def place_booking():
             print("\nReceived an booking in JSON:", booking)
 
             # do the actual work
-            # 1. Send order info {cart items}
             result = processBooking(booking)
             return jsonify(result), result["code"]
 
@@ -44,32 +54,63 @@ def place_booking():
     }), 400
 
 def processBooking(booking):
-    print('\n-----Invoking booking microservice-----')
-    booking_result = invoke_http(rental_url, method='POST', json=booking)
-    print('booking_result:', booking_result)
-
-    code = booking_result["code"]
-    if code not in range(200, 300):
-        # continue even if this invocation fails
-        print("Booking status ({:d}) sent to the error microservice:".format(
-            code), booking_result)
-
-        # 7. Return error
+    #1. Call RentalVehicle microservice to update vehicle to booked status
+    try: 
+        print('\n-----Invoking RentalVehicle microservice-----')
+        print(vehicle_url, booking["PlateNo"])
+        booking_result = invoke_http(vehicle_url + booking["PlateNo"], method='PUT')
+        print('booking_result:', booking_result)
+        if booking_result["code"] != 201:
+            return {
+                "code": 500,
+                "message": "An error occurred in the RentalVehicle microservice."
+            }
+    except:
         return {
-            "code": 500,
-            "data": {"booking_result": booking_result},
-            "message": "Booking creation failure sent for error handling."
+                "code": 500,
+                "message": "An error occurred in the RentalVehicle microservice."
+            }
+    #2 Call Rental microservice to create a new rental
+    try:
+        print('\n-----Invoking Rental microservice-----')
+        new_booking = {
+            "DriverID": booking["DriverID"],
+            "PlateNo": booking["PlateNo"],
+            "BookingDuration": booking["BookingDuration"],
+            "TotalFare": booking["TotalFare"],
+            "StartLocation": booking["StartLocation"],
         }
+        print('new_booking:', new_booking)
+        rental_result = invoke_http(rental_url, method='POST', json=new_booking)
+        print('rental_result:', rental_result)
+        if rental_result["code"] != 201:
+            return {
+                "code": 500,
+                "message": "An error occurred in the Rental microservice."
+            }
+    except:
+        return {
+                "code": 500,
+                "message": "An error occurred in the Rental microservice."
+            }
+    #3 Return success message
+    return {
+        "code": 200,
+        "message": "Booking successful.",
+        "data": rental_result
+    }
 
-   
-
+    
 
 
 # Execute this program if it is run as a main script (not by 'import')
 if __name__ == "__main__":
     print("This is flask " + os.path.basename(__file__) +
-          " for placing an order...")
-    app.run(host="0.0.0.0", port=5100, debug=True)
+          " for placing an booking...")
+    app.run(host="0.0.0.0", port=5200, debug=True)
+
+
+
     # Notes for the parameters:
     # - debug=True will reload the program automatically if a change is detected;
     #   -- it in fact starts two instances of the same flask program,
