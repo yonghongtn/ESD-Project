@@ -150,6 +150,7 @@ def cancel_trip(RentalID):
         try:
             trip.EndLocation = trip.StartLocation
             trip.EndTime = datetime.now()
+            trip.TotalFare = 0
             db.session.commit()
             return jsonify(
                 {
