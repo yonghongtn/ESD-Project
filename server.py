@@ -1,12 +1,5 @@
-#! /usr/bin/env python3.6
-
-"""
-server.py
-
-Python 3.6 or newer required.
-"""
 import os
-from flask import Flask, redirect, request, jsonify
+from flask import Flask, redirect, request, jsonify, url_for
 import stripe
 
 app = Flask(__name__,
@@ -23,30 +16,59 @@ YOUR_DOMAIN = 'http://localhost:4242'
 @app.route('/create-checkout-session', methods=['POST'])
 def create_checkout_session():
     try:
+        # data = request.get_json()
+        # price = data['price']
+        # quantity = data['quantity']
+       
+        
+        # price = 'price_1MsPOIFZwLHtEN8Wtw0f4SOT'
+        quantity = 1
+        
+        price_id = "price_1MsPOIFZwLHtEN8Wtw0f4SOT"
+        price = stripe.Price.retrieve(price_id)
+        product = stripe.Product.retrieve(price.product)
+        print(product)
+
+
         checkout_session = stripe.checkout.Session.create(
             line_items=[
                 {
                     # Uncomment the price & quantity of the product you want to sell
                     
-                    # Kia Nitro Hybrid, $10
-                    'price': 'price_1MsPOIFZwLHtEN8Wtw0f4SOT',
-                    'quantity': 1,
+                    # # Kia Nitro Hybrid, $10
+                    # 'price': 'price_1MsPOIFZwLHtEN8Wtw0f4SOT',
+                    # 'quantity': 1,
                     
-                    # Honda Civic, $20
-                    'price': 'price_1MsPToFZwLHtEN8WZIbuZs75',
-                    'quantity': 1,
-                
+                    # # Honda Civic, $20
+                    # 'price': 'price_1MsPToFZwLHtEN8WZIbuZs75',
+                    # 'quantity': 1,
+                    
+                    'price': price,
+                    'quantity': quantity,
                 },
             ],
+            
+                #    Stripe gets car details from price_id
+            # product_id = price.product
+            # product = stripe.Product.retrieve(product_id)
+            # product_metadata = product.metadata
+            # product_name = product.name
+            # product_details= product.details
+            # print(product_details)
             mode='payment',
             success_url=YOUR_DOMAIN + '/success.html',
             cancel_url=YOUR_DOMAIN + '/cancel.html',
+            # success_url= url_for('success', _external=True) + '?session_id={CHECKOUT_SESSION_ID}',
+            # cancel_url=url_for('cancel', _external=True),
+            
         )
     except Exception as e:
         return str(e)
 
-    redirect(checkout_session.url, code=303) 
-    return jsonify()
+    
+    return redirect(checkout_session.url, code=303) 
+    # redirect(checkout_session.url, code=303) 
+    # return jsonify({'name': product_name, 'metadata': product_metadata})
 
 
 
