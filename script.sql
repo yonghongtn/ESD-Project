@@ -30,17 +30,16 @@ Model varchar(50) not null,
 VehicleStatus varchar(50) not null,
 ParkingSpotName varchar(255) not null,
 Price float not null,
-PriceID varchar(50) not null,
 Latitude float not null,
 Longitude float not null);
 
 -- insert values into vehicle table
-INSERT INTO vehicle VALUES
-('SGA2345C', 'Kia', 'Nitro Hybrid', 'Available', 'SCIS', 1000, 'price_1MsPOIFZwLHtEN8Wtw0f4SOT',  1.42681, 103.836),
-('SGK4321D', 'Honda', 'Civic', 'Available', 'LKCSOB', 2000, 'price_1MsPToFZwLHtEN8WZIbuZs75', 1.40145, 103.818),
-('SGL9987H', 'Mercedes-Benz', 'GLA-Class', 'Available', 'YPHSOL', 3000, 'price_1MsPeCFZwLHtEN8WtHaJkjbm', 1.37427, 103.846),
-('SGX1234A', 'Hyundai', 'Avante', 'Available', 'SOA', 4000,'price_1MsPfoFZwLHtEN8WZXrbHjG9', 1.29924, 103.854),
-('SGY9876B', 'Toyota', 'Wish', 'Available', 'SOSS', 5000,'price_1MsPiEFZwLHtEN8WN99SAd2O', 1.2968, 103.845);
+INSERT INTO RentalVehicle.vehicle VALUES
+('SGA2345C', 'Kia', 'Nitro Hybrid', 'Available', 'SCIS', 1000, 1.42681, 103.836),
+('SGK4321D', 'Honda', 'Civic', 'Available', 'LKCSOB', 2000, 1.40145, 103.818),
+('SGL9987H', 'Mercedes-Benz', 'GLA-Class', 'Available', 'YPHSOL', 3000, 1.37427, 103.846),
+('SGX1234A', 'Hyundai', 'Avante', 'Available', 'SOA', 4000, 1.29924, 103.854),
+('SGY9876B', 'Toyota', 'Wish', 'Available', 'SOSS', 5000, 1.2968, 103.845);
 
 -- create RentalTrip DB
 drop schema if exists RentalTrip;
