@@ -14,7 +14,6 @@ report_url = "http://localhost:5002/report"
 
 # Sample input for this function
 # { "Report":
-#   {"ReportID": 3,
 #   "DriverID": 3,
 #   "RentalID": 3,
 #   "PlateNo": "SGX1234A",
@@ -36,8 +35,10 @@ def manage_issue():
             print("\nReceived an report in JSON:", report)
             #calls the appropriate function based on the outcome of the report
             if report["Outcome"] == "Refund":
+                print("Refund Processing")
                 result = process_refund(report, payment_id)
             else:
+                print("Vehicle Replacement Processing")
                 result = replace_vehicle(report, current_location)
             return result
 
@@ -146,9 +147,10 @@ def replace_vehicle(report, current_location):
             }
 
     #2 update reported vehicle status to damaged
-    print('\n-----Invoking vehicle microservice-----')
+    print('\n-----Invoking vehicle microservice, changing status to damaged-----')
     damaged_vehicle_url = "http://localhost:5003/rentalvehicle/damage/" + report["PlateNo"]
     try:
+        print('Damaged vehicle url', damaged_vehicle_url)
         damageupdate_result = invoke_http(damaged_vehicle_url, method='PUT')
         print('Vehicle status update successful', damageupdate_result)
 
@@ -159,11 +161,12 @@ def replace_vehicle(report, current_location):
             }
     
     #3 get available vehicles and choose nearest one
-    print('\n-----Invoking vehicle microservice-----')
-    get_vehicle_url = "http://localhost:5003/rentalvehicle/"
+    print('\n-----Invoking vehicle microservice to get all vehicles-----')
+    get_vehicle_url = "http://localhost:5003/rentalvehicle"
     try:
         #get all vehicles
         get_vehicle_result = invoke_http(get_vehicle_url, method='GET')
+        print('All vehicles retrieved successfully', get_vehicle_result)
         all_vehicles = get_vehicle_result['data']['vehicles']
         print('All vehicles retrieved successfully', all_vehicles)
         #filter available vehicles
@@ -231,13 +234,19 @@ def replace_vehicle(report, current_location):
     try:
         update_rental = invoke_http(update_rental_url, method='PUT')
         print('Rental record updated successfully', update_rental)
+        #Get car model and brand of new car
+        for vehicle in available_vehicles:
+            if vehicle["PlateNo"] == closest_vehicle["PlateNo"]:
+                newCarBrand = vehicle["Brand"]
+                newCarModel = vehicle["Model"]
+
     except:
         return {
                 "code": 500,
                 "message": "An error occurred in the rental microservice."
             } 
     
-    return {"code": 200, "message": "Successfully processed replacement"}
+    return {"code": 200, "message": "Successfully processed replacement", "booking": update_rental, "Brand": newCarBrand, "Model": newCarModel}
 
 if __name__ == "__main__":
-    app.run(port=5100, debug=True)
+    app.run(port=5300, debug=True)

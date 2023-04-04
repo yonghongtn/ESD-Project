@@ -87,7 +87,7 @@
                             <td>{{vehicle.Brand}}</td>
                             <td>{{vehicle.Model}}</td>
                             <td>{{vehicle.PlateNo}}</td>
-                            <td>{{vehicle.Price}}</td>
+                            <td>${{vehicle.Price/100}}</td>
                             <td><button class="btn-success btn" @click="showDetails(vehicle)">Details</button></td>
                         </tr>
                     </table>

@@ -16,12 +16,8 @@
 
     <!-- JQuery-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <!-- Redirect to other pages if not correct status. Not done yet-->
-    <script>
-        if (sessionStorage["status"] != null){
-            
-        }
-    </script>
+   
+
     
 </head>
 <body>
@@ -70,14 +66,14 @@
             </div>
             <div class="row mb-3 fs-4">
                 <div class="col-12 col-md-6 col-xl-8 fs-3">
-                    Plate Number: {{PlateNo}} <br>
-                    Brand: {{Brand}} <br>
-                    Model: {{Model}} <br>
-                    Hours booked: {{HoursBooked}} <br>
-                    Booking until: {{ExpectedEndTime}} <br>
+                    Plate Number: {{plateNo}} <br>
+                    Brand: {{brand}} <br>
+                    Model: {{model}} <br>
+                    Booking Start: {{start_time}} <br>
+                    Hours booked: {{hours_booked}} <br>
                 </div>
                 <div class="col-12 col-md-6 col-xl-4">
-                    <img :src="imgsrc" alt="Car Image" class="img-fluid">
+                    <img :src="img_url" alt="Car Image" class="img-fluid">
                 </div>
             </div>
             <!-- Reserved for google maps API to display car location and parking spots-->

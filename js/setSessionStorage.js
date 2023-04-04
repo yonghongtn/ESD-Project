@@ -3,3 +3,4 @@
 // Set
 sessionStorage.setItem("username", "James Tan");
 sessionStorage.setItem("status", "No car booked");
+sessionStorage.setItem("driverid", 1);
