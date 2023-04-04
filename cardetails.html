@@ -60,9 +60,9 @@
                         Location: {{location}} <br>
                         Brand: {{brand}} <br>
                         Model: {{model}} <br>
-                        Price per hour: {{price}} <br>
-                        Hours booked: <input type="number" min="0.5" step="0.5" v-model="hours_booked"><br>
-                        Total Price: ${{hours_booked*price}} <br>
+                        Price per hour: ${{price/100}} <br>
+                        Hours booked: <input type="number" min="1" step="1" v-model="hours_booked"><br>
+                        Total Price: ${{hours_booked*price/100}} <br>
                         <button class="btn btn-success" @click="bookVehicle()">Book Car</button>
                     </div>
                     <div class="col-12 col-md-6 col-xl-4">

@@ -6,7 +6,7 @@ CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/rentalvehicle'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
-import stripe
+import payment
 
 # # Define Vehicle model
 # class Vehicle(db.Model):
@@ -24,11 +24,11 @@ import stripe
 # vehicles = session.query(vehicle).all()
 
 # Initialize Stripe API
-stripe.api_key = "sk_test_51MmZA2FZwLHtEN8WhQHaD5gC1XiWk9wni4zCP8p60kq6hC6H6nP6x5yu5XCQSKmOQF6VgNHB3AwJybDG8mpkgbFX00vgT93OCZ"
+payment.api_key = "sk_test_51MmZA2FZwLHtEN8WhQHaD5gC1XiWk9wni4zCP8p60kq6hC6H6nP6x5yu5XCQSKmOQF6VgNHB3AwJybDG8mpkgbFX00vgT93OCZ"
 
 # Create vehicles in Stripe
 for vehicle in vehicles:
-    stripe_vehicle = stripe.Product.create(
+    stripe_vehicle = payment.Product.create(
         name=vehicle.Model,
         id= vehicle.PlateNo,
         
@@ -37,7 +37,7 @@ for vehicle in vehicles:
     )
 
     # Create price for the vehicle
-    stripe.Price.create(
+    payment.Price.create(
         unit_amount=vehicle.price * 100,
         currency='sgd',
         vehicle=stripe_vehicle.id,
