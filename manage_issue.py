@@ -4,6 +4,9 @@ import googlemaps
 import os, sys
 
 import requests
+import amqp_setup
+import pika
+import json
 from invokes import invoke_http
 
 app = Flask(__name__)
@@ -13,15 +16,17 @@ gmaps = googlemaps.Client(key = 'AIzaSyAWm0apf-es3-DdJCkC-RimWitR5x2kFrw')
 report_url = "http://localhost:5002/report"
 
 # Sample input for this function
-# { "Report":
-#   "DriverID": 3,
-#   "RentalID": 3,
-#   "PlateNo": "SGX1234A",
-#   "Outcome": "Replace",
-#   "Content": "My car door cannot open"},
-#   "Current Location": {'lat': 1.29715, 'lng': 103.84981},
-#   "PaymentID": "pi_3MsMjPFZwLHtEN8W0Py49Hg7",
-#    "PhoneNo": "+6597991787"}    
+
+# {"Report": {
+#     "DriverID": 3,
+#     "RentalID": 3,
+#     "PlateNo": "SGX1234A",
+#     "Outcome": "Refund",
+#     "Content": "My car door cannot open"},
+# "Current Location": {"lat": 1.29715, "lng": 103.84981},
+# "PaymentID": "pi_3MsMjPFZwLHtEN8W0Py49Hg7",
+# "PhoneNo" : "+6597991787"}  
+
 
 @app.route("/manage_issue", methods=['POST'])
 def manage_issue():
@@ -33,11 +38,12 @@ def manage_issue():
             report = full_report["Report"]
             payment_id = full_report["PaymentID"]
             current_location = full_report["Current Location"]
+            phone_number = full_report["PhoneNo"]
             print("\nReceived an report in JSON:", report)
             #calls the appropriate function based on the outcome of the report
             if report["Outcome"] == "Refund":
-                print("Refund Processing")
-                result = process_refund(report, payment_id)
+
+                result = process_refund(report, payment_id, phone_number)
             else:
                 print("Vehicle Replacement Processing")
                 result = replace_vehicle(report, current_location)
@@ -52,7 +58,7 @@ def manage_issue():
 
             return jsonify({
                 "code": 500,
-                "message": "place_booking.py internal error: " + ex_str
+                "message": "manage_issue.py internal error: " + ex_str
             }), 500
 
     # if reached here, not a JSON request.
@@ -61,7 +67,7 @@ def manage_issue():
         "message": "Invalid JSON input: " + str(request.get_data())
     }), 400
 
-def process_refund(report, payment_id):
+def process_refund(report, payment_id, phone_number):
 
     #1 initialize report
     print('\n-----Invoking report microservice-----')
@@ -105,30 +111,42 @@ def process_refund(report, payment_id):
 
 
     #4 initiate refund
-    print('\n-----Invoking payment microservice-----')
-    refund_url = "http://localhost:5006/refund-payment/" + f"{payment_id}"
-    try:
-        refund_result = invoke_http(refund_url, method='GET')
-        print('Refund successful', refund_result)
+    # print('\n-----Invoking payment microservice-----')
+    # refund_url = "http://localhost:5006/refund-payment/" + f"{payment_id}"
+    # try:
+    #     refund_result = invoke_http(refund_url, method='POST')
+    #     print('Refund successful', refund_result)
 
-    except:
-        return {
-                "code": 500,
-                "message": "An error occurred in the payment microservice."
-            }
+    # except:
+    #     return {
+    #             "code": 500,
+    #             "message": "An error occurred in the payment microservice."
+    #         }
 
     #5 Send SMS
-    """ print('-----Invoking SMS microservice-----')
-    sms_url = "http://localhost:5005/Twilio/send_txt_message/" + "'+6597991787'"
-    try:
-        sms_result = invoke_http(sms_url, method='GET')
-        print('SMS Notification successful', sms_result)
+    # print('\n-----Invoking SMS microservice-----')
+    # sms_url = "http://localhost:5005/Twilio/send_txt_message/" + f"{report['PhoneNo']}"
+    # try:
+    #     sms_result = invoke_http(sms_url, method='GET')
+    #     print('SMS Notification successful', sms_result)
 
-    except:
-        return {
-                "code": 500,
-                "message": "An error occurred in the SMS microservice."
-            }"""
+    # except:
+    #     return {
+    #             "code": 500,
+    #             "message": "An error occurred in the SMS microservice."
+    #         }
+
+    message = {
+        "code": 200,
+        "PhoneNo": phone_number,
+        "message": "Your refund has been confirmed and send. Please check your bank account these few weeks. If there are any clarification or questions you have, do feel free to contact us. Thank you."
+    }
+    content = json.dumps(message)
+
+    print('\n\n-----Publishing the (refund) message with routing_key=refund.sms-----')  
+    # Response
+    amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="refund.sms", 
+            body=content, properties=pika.BasicProperties(delivery_mode=2))
 
     return {"code": 200, "message": "Successfully processed refund"} 
 
