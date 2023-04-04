@@ -20,7 +20,8 @@ report_url = "http://localhost:5002/report"
 #   "Outcome": "Replace",
 #   "Content": "My car door cannot open"},
 #   "Current Location": {'lat': 1.29715, 'lng': 103.84981},
-#   "PaymentID": "pi_3MsMjPFZwLHtEN8W0Py49Hg7"}    
+#   "PaymentID": "pi_3MsMjPFZwLHtEN8W0Py49Hg7",
+#    "PhoneNo": "+6597991787"}    
 
 @app.route("/manage_issue", methods=['POST'])
 def manage_issue():
@@ -107,7 +108,7 @@ def process_refund(report, payment_id):
     print('\n-----Invoking payment microservice-----')
     refund_url = "http://localhost:5006/refund-payment/" + f"{payment_id}"
     try:
-        refund_result = invoke_http(refund_url, method='POST')
+        refund_result = invoke_http(refund_url, method='GET')
         print('Refund successful', refund_result)
 
     except:
@@ -117,7 +118,7 @@ def process_refund(report, payment_id):
             }
 
     #5 Send SMS
-    print('\n-----Invoking SMS microservice-----')
+    """ print('-----Invoking SMS microservice-----')
     sms_url = "http://localhost:5005/Twilio/send_txt_message/" + "'+6597991787'"
     try:
         sms_result = invoke_http(sms_url, method='GET')
@@ -127,9 +128,9 @@ def process_refund(report, payment_id):
         return {
                 "code": 500,
                 "message": "An error occurred in the SMS microservice."
-            }
+            }"""
 
-    return {"code": 200, "message": "Successfully processed refund"}
+    return {"code": 200, "message": "Successfully processed refund"} 
 
 
 def replace_vehicle(report, current_location):
@@ -168,8 +169,6 @@ def replace_vehicle(report, current_location):
         get_vehicle_result = invoke_http(get_vehicle_url, method='GET')
         print('All vehicles retrieved successfully', get_vehicle_result)
         all_vehicles = get_vehicle_result['data']['vehicles']
-        print('All vehicles retrieved successfully', all_vehicles)
-        #filter available vehicles
         available_vehicles = []
         for vehicle in all_vehicles:
             if vehicle["VehicleStatus"] == "Available":
@@ -180,7 +179,6 @@ def replace_vehicle(report, current_location):
                 "code": 500,
                 "message": "An error occurred in the vehicle microservice."
             }
-    #get browser location, code below is to be changed after UI integration
 
     #compile list of available vehicle locations
     origins = []
@@ -207,9 +205,10 @@ def replace_vehicle(report, current_location):
             }
     #get vehicle with shortest distance
     distances = distance["rows"]
+    print(distances)
     shortest_distance = 10000000000000000000000000000000000000000000000000000000000000000
     for i in range(len(distances)):
-        if distances[i]["elements"][0]["distance"]["value"] < shortest_distance:
+        if distances[i]["elements"][0]["status"] == "OK" and distances[i]["elements"][0]["distance"]["value"] < shortest_distance:
             shortest_distance = distances[i]["elements"][0]["distance"]["value"]
             closest_vehicle = available_vehicles[i]
             
@@ -239,6 +238,7 @@ def replace_vehicle(report, current_location):
             if vehicle["PlateNo"] == closest_vehicle["PlateNo"]:
                 newCarBrand = vehicle["Brand"]
                 newCarModel = vehicle["Model"]
+                newLocation = vehicle["ParkingSpotName"]
 
     except:
         return {
@@ -246,7 +246,7 @@ def replace_vehicle(report, current_location):
                 "message": "An error occurred in the rental microservice."
             } 
     
-    return {"code": 200, "message": "Successfully processed replacement", "booking": update_rental, "Brand": newCarBrand, "Model": newCarModel}
+    return {"code": 200, "message": "Successfully processed replacement", "booking": update_rental, "Brand": newCarBrand, "Model": newCarModel, "Location": newLocation}
 
 if __name__ == "__main__":
     app.run(port=5300, debug=True)

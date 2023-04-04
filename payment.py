@@ -62,7 +62,7 @@ def retrieve_session(sessionid):
 
 
 
-@app.route('/refund-payment/<payment_intent_id>', methods=['POST'])
+@app.route('/refund-payment/<payment_intent_id>', methods=['GET'])
 def refund_payment(payment_intent_id):
     # payment_intent_id = request.form['payment_intent_id']
     # payment_intent_id = "pi_3MsMjPFZwLHtEN8W0Py49Hg7"
@@ -74,11 +74,35 @@ def refund_payment(payment_intent_id):
         
         # Refund the payment intent
         refund = stripe.Refund.create(payment_intent=payment_intent_id)
+        print(refund)
+        return jsonify({"code": 200, "message": "Payment refunded successfully.","data": refund})
         
     except Exception as e:
-        return str(e)
+        return jsonify({"code": 500, "message": "Payment refund failed.","data": str(e)})
 
-    return 'Payment refunded successfully!'
+""" 
+Returns the following
+{
+    "code": 200,
+    "data": {
+        "amount": 2000,
+        "balance_transaction": "txn_3Mt20xFZwLHtEN8W0CmOyVDB",
+        "charge": "ch_3Mt20xFZwLHtEN8W05907OQX",
+        "created": 1680584580,
+        "currency": "sgd",
+        "id": "re_3Mt20xFZwLHtEN8W0yKQ9WYM",
+        "metadata": {},
+        "object": "refund",
+        "payment_intent": "pi_3Mt20xFZwLHtEN8W0Hhv4Rxz",
+        "reason": null,
+        "receipt_number": null,
+        "source_transfer_reversal": null,
+        "status": "succeeded",
+        "transfer_reversal": null
+    },
+    "message": "Payment refunded successfully."
+}
+    """   
 
 
 if __name__ == '__main__':

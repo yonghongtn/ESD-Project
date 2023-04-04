@@ -4,3 +4,4 @@
 sessionStorage.setItem("username", "James Tan");
 sessionStorage.setItem("status", "No car booked");
 sessionStorage.setItem("driverid", 1);
+sessionStorage.setItem("mobile_number", "+6597991787");

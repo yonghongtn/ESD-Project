@@ -8,7 +8,8 @@ const app = Vue.createApp({
             model: null,
             hours_booked: null,
             start_time: null,
-            img_url: null
+            img_url: null,
+            location: null,
         }
     },
     methods:{
@@ -63,6 +64,7 @@ const app = Vue.createApp({
                         this.hours_booked= sessionStorage.getItem("hours_booked")
                         this.start_time= booking_result.data.data.StartTime
                         this.img_url = "img/"+this.brand + " " + this.model + ".png"
+                        this.location = sessionStorage.getItem("vehicle_to_view_location")
                         sessionStorage.setItem("rental_id", booking_result.data.data.RentalID)
                         sessionStorage.setItem("start_time", booking_result.data.data.StartTime)
                     }
@@ -77,6 +79,7 @@ const app = Vue.createApp({
             this.plateNo= sessionStorage.getItem("vehicle_to_view_plateno")
             this.brand= sessionStorage.getItem("vehicle_to_view_brand")
             this.model= sessionStorage.getItem("vehicle_to_view_model")
+            this.location = sessionStorage.getItem("vehicle_to_view_location")
             this.hours_booked= sessionStorage.getItem("hours_booked")
             this.start_time= sessionStorage.getItem("start_time")
             this.img_url = "img/"+this.brand + " " + this.model + ".png"
