@@ -72,6 +72,106 @@ def create_checkout_session():
 
 
 
+
+
+
+   
+
+    """def webhook():
+
+    Returns:{}
+    Prints: Payment intent in terminal below "WEBHOOK CALLED"
+            eg: PAYMENT_INTENT_ID:
+                pi_3Mt1ZlFZwLHtEN8W0nHxmMm8  
+    Can also send the information elsewhere depending on where you want it   
+        
+    """
+# stripe listen --forward-to 127.0.0.1:4242/stripe_webhook
+@app.route('/stripe_webhook', methods=['POST'])
+def webhook():
+    print("WEBHOOK CALLED")
+
+    if request.content_length> 1024 * 1024:
+        print("Request too big.")
+        abort(400)
+    payload = request.get_data()
+    sig_header = request.environ.get('HTTP_STRIPE_SIGNATURE')
+    endpoint_secret = 'whsec_4297b4da3c900638c135bdbff1b86b417f4af894ab1097acd92a63aaa43ad5f4'
+    event = None
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, endpoint_secret
+        )
+    except ValueError as e:
+        # Invalid payload
+        print('INVALID PAYLOAD')
+        return {}, 400
+    
+    except stripe.error.SignatureVerificationError as e:
+        # Invalid signture
+        print('INVALID SIGNATURE')
+        return {}, 400
+    
+    # Handle the event: Print payment intent
+    if event['type'] == 'checkout.session.completed':
+        payment_intent_id = event['data']['object']['payment_intent'] # retrieve the PaymentIntent ID
+        print("PAYMENT_INTENT_ID: ")
+        print(payment_intent_id )
+        
+        
+        
+        '''THE COMMENTED PART DOESNT WORK YET'''
+    # # Handle the event: Send receipt
+    # if event['type'] == 'payment_intent.succeeded':
+    #     payment_intent_id = event['data']['object']['id']
+    #     customer_email = event['data']['object']['payment_intent']['charges']['data'][0]['billing_details']['email']
+    #     stripe.PaymentIntent.modify(
+    #         payment_intent_id,
+    #         receipt_email=customer_email
+    #     )   
+    
+    
+    # # Handle the event: Print refund successful and send refund receipt
+    # elif event['type'] == 'charge.refunded':
+    #     refund_id = event['data']['object']['id']
+    #     customer_email = event['data']['object']['billing_details']['email']
+    #     print("Refund successful: " + refund_id)
+    #     stripe.Refund.modify(
+    #         refund_id,
+    #         refund_receipt_email=customer_email
+        # )  
+        
+    # Handle the event: Print payment intent
+        #     session = event['data']['object']
+        #     print(session)
+        # line_items = stripe.checkout.Session.list_line_items(session['id'], limit = 1)
+        # print(line_items['data'][0]['description'])
+    
+    # If want to store in another db / send receipt (code not done)
+        # payment_intent_id = session.get('payment_intent')
+        # if payment_intent_id:
+        #     payment_intent = stripe.PaymentIntent.retrieve(payment_intent_id)
+        #     print( payment_intent)
+        #     return jsonify(payment_intent)
+            
+    return {}  
+    
+
+
+
+
+
+
+
+
+    """def refund_payment():
+    Input: Payment_Intent
+    Does: Refund
+    Returns:
+    Prints: 'Payment refunded successfully!'    
+        
+    """
 @app.route('/refund-payment', methods=['POST'])
 def refund_payment():
     # payment_intent_id = request.form['payment_intent_id']
