@@ -142,15 +142,14 @@ def end_trip(RentalID, EndLocation):
                 "message": "Trip not found."
             }
         ), 404
-
+    
 @app.route("/rental/canceltrip/<RentalID>", methods=['PUT'])
 def cancel_trip(RentalID):
     trip = Rental.query.filter_by(RentalID=RentalID).first()
+
     if trip:
         try:
-            trip.EndLocation = trip.StartLocation
             trip.EndTime = datetime.now()
-            trip.TotalFare = 0
             db.session.commit()
             return jsonify(
                 {
@@ -178,7 +177,6 @@ def cancel_trip(RentalID):
                 "message": "Trip not found."
             }
         ), 404
-
 
 if __name__ == '__main__':
     app.run(port=5001, debug=True)

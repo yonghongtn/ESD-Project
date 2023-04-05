@@ -64,14 +64,6 @@
                 </div>
             </div>
             <div class="row mb-3 fs-4">
-                <div class="col-12 col-md-6 col-lg-4 col-xl-3 justify-content-center">
-                    Fault Type: 
-                    <select class="form-select" v-model="faultTypeSelected">
-                        <option v-for="fault in faultTypes" :value="fault">{{fault}}</option>
-                    </select>
-                </div>
-            </div>
-            <div class="row mb-3 fs-4">
                 <div>
                     Description of Fault:<br>
                     <textarea class="form-control" v-model="faultDescription" rows="3" placeholder="Please describe the fault found in detail (at least 50 characters)">
@@ -79,27 +71,22 @@
                     </textarea>
                 </div>
             </div>
-            <button class="btn btn-success fs-4" :disabled = "faultDescription.length < 50">Submit Form</button>
-            <!-- Show the options possible after submission of report -->
-            <div class="fs-4 mt-3" v-show="false">
-                Submission Successful.
-                Your fault has been successfully reported and we have evaluated your submission.
-                You can either:
-                <ul>
-                    <li>
-                        Seek a refund. The refund status will be communicated to you via SMS.<br>
-                        <button class="btn btn-primary">Seek Refund</button>
-                    </li> 
-                    <li>
-                        Get a replacement vehicle. A vehicle that is nearest to the current vehicle will be assigned to you.<br>
-                        <button class="btn btn-primary">Get Replacement Vehicle</button>
-                    </li>
-                </ul>
-                
+            <div class="row mb-3 fs-4">
+                <div>
+                    What do you want RideEz to do?<br>
+                    <select v-model="chosen_remedy">
+                        <option v-for="remedy of remedies">{{remedy}}</option>
+                    </select>
+                </div>
             </div>
-            <div v-show="false">
-                Submission Not Successful.
-                
+            <button class="btn btn-success fs-4" :disabled = "faultDescription.length < 50" @click="process_report()">Submit Form</button><br>
+            You must enable location services to submit this form successfully.
+            <!-- Show the outcome after submission of report -->
+            <div class="row mb-3 fs-4 text-danger" v-if="submission_error">
+                {{submission_error_message}}
+            </div>
+            <div class="row mb-3 fs-4 text-success" v-if="outcome.length>0">
+                {{outcome}}
             </div>
         </div>
         
