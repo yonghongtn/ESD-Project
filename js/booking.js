@@ -10,11 +10,66 @@ const app = Vue.createApp({
             start_time: null,
             img_url: null,
             location: null,
+            error_message: null,
+            lat: null,
+            long: null,
+            
         }
     },
     methods:{
+        error(){
+            this.error_message = "Please enable Geolocation"
+        },
+        success(position){
+            this.lat = position.coords.latitude
+            this.long = position.coords.longitude
+            this.error_message = null
+        },
         redirect(){
             window.location.href = "upload_qr.html"
+        },
+        async endtrip(){
+            // check if geolocation is enabled
+            if (!"geolocation" in navigator) {
+                console.log("geolocation is not available")
+                this.error_message = "Geolocation is not available"
+            }
+            else{
+                navigator.geolocation.getCurrentPosition(this.success, this.error)
+                //delay by 1 second
+                await new Promise(r => setTimeout(r, 1000));
+                if (this.lat != null){
+                    //call parking handler microservice
+                    var content_body = {
+                        "driver_id" : sessionStorage.getItem("driverid"),
+                        "rentalid": sessionStorage.getItem("rental_id"),
+                        "coordinates":{
+                            "lat": this.lat,
+                            "lng": this.long
+                        }
+                    }
+                    console.log(content_body)
+                    var parking_response = await fetch("http://127.0.0.1:5100/parking_handler",
+                    {
+                        method: 'POST',
+                        body: JSON.stringify(content_body),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    var parking_result = await parking_response.json()
+                    console.log(parking_result)
+                    if (parking_result.code == 200){
+                        //clear session storage
+                        sessionStorage.clear()
+                        //redirect to trip ended page
+                        window.location.href = "trip_ended.html"
+                    }
+                    else{
+                        this.error_message = parking_result.message
+                    }
+                }
+            }
         }
     },
     created(){

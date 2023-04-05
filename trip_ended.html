@@ -55,6 +55,7 @@
                     <div class="col-12 text-center">
                         <h1 class="text-center display-4">Booking Ended</h1>
                         <h2 class="text-center display-6">Your trip has ended. You can book another car to start a new tip by clcking the button below. Thank you for renting with RideEz. We hope that you had a pleasant journey with us!</h2>
+                        <h4 class="text-center display-6" v-if="message!=null">{{message}}</h2>
                         <button class="btn btn-primary fs-4 mt-3" @click="redirect()">Book Another Car</button><br>
                     </div>
                 </div>

@@ -42,7 +42,7 @@ def send_txt_message (destination: str, message: str) :
     account_sid = os.environ['TWILIO_ACCOUNT_SID']
     auth_token = os.environ['TWILIO_AUTH_TOKEN']
     client = Client(account_sid, auth_token)
-    message = client.messages.create(body=message, from_="+1 585 639 4954", to=destination)
+    message = client.messages.create(body=message, from_="+15855801259", to=destination)
 
 # @app.route('/Twilio/send_txt_message/<destination>')
 def main(body) :

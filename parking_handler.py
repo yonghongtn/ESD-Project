@@ -10,10 +10,10 @@ app = Flask(__name__)
 CORS(app)
 
 #list of all URLS
-parking_URL = "http://localhost:5000/parkingspot"
+parking_URL = "http://127.0.0.1:5000/parkingspot"
 gmaps = googlemaps.Client(key = 'AIzaSyAWm0apf-es3-DdJCkC-RimWitR5x2kFrw')
-rental_URL = "http://localhost:5001/rental"
-vehicle_URL = "http://localhost:5003/rentalvehicle/updateavailable/"
+rental_URL = "http://127.0.0.1:5001/rental"
+vehicle_URL = "http://127.0.0.1:5003/rentalvehicle/updateavailable/"
 """ 
 For handling parking using coordinates
 Takes in a JSON of the format:
