@@ -52,6 +52,8 @@ const app = Vue.createApp({
             sessionStorage.setItem("vehicle_to_view_model", vehicle.Model)
             sessionStorage.setItem("vehicle_to_view_location", vehicle.ParkingSpotName)
             sessionStorage.setItem("vehicle_to_view_price", vehicle.Price)
+            sessionStorage.setItem("vehicle_to_view_priceid", vehicle.PriceID)
+            sessionStorage.setItem("vehicle_to_view_location_id", vehicle.ParkingSpotID)
             /* Redirect to view vehicle page */
             window.location.href = "cardetails.html"
         }
@@ -60,7 +62,7 @@ const app = Vue.createApp({
         /* Get data from microservice */
         $(async() => {           
             // Change serviceURL to your own
-            var serviceURL = "http://127.0.0.1:5000/rentalvehicle";
+            var serviceURL = "http://localhost:5003/rentalvehicle";
 
             try {
                 const response =
@@ -82,7 +84,6 @@ const app = Vue.createApp({
                     }
                     //console.log(locations)
                     this.locations = locations
-
                 }
             }
             catch (error) {

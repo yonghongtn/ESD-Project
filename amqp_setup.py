@@ -16,7 +16,7 @@ connection = pika.BlockingConnection(
     # If see: Stream connection lost: ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)
     # - Try: simply re-run the program or refresh the page.
     # For rare cases, it's incompatibility between RabbitMQ and the machine running it,
-    # - Use the Docker version of RabbitMQ instead: https://www.rabbitmq.com/download.html
+    # - Use the Docker version of RabbitMQ insteaod: https://www.rabbitmq.com/download.html
 channel = connection.channel()
 # Set up the exchange if the exchange doesn't exist
 # - use a 'topic' exchange to enable interaction

@@ -16,12 +16,8 @@
 
     <!-- JQuery-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <!-- Redirect to other pages if not correct status. Not done yet-->
-    <script>
-        if (sessionStorage["status"] != null){
-            
-        }
-    </script>
+   
+
     
 </head>
 <body>
@@ -60,8 +56,9 @@
             <div class="row mb-4">
                 <div class="col-12">
                     <h1 class="text-center display-4">Booking Details</h1>
-                    <button class="btn btn-warning fs-4">End Trip</button>&nbsp;
-                    <button class="btn btn-primary fs-4" @click="redirect()">Scan QR Code To End Trip</button>
+                    <button class="btn btn-warning fs-4" @click="endtrip()">End Trip With GPS Location</button>&nbsp;
+                    <button class="btn btn-primary fs-4" @click="redirect()" v-if="error_message!=null">Scan QR Code To End Trip</button>
+                    <h3 class="text-danger fs-4" v-if="error_message!=null">{{error_message}}</h3>
                 </div>
             </div>
             <!-- Failure message when verification of current location fails -->
@@ -70,14 +67,15 @@
             </div>
             <div class="row mb-3 fs-4">
                 <div class="col-12 col-md-6 col-xl-8 fs-3">
-                    Plate Number: {{PlateNo}} <br>
-                    Brand: {{Brand}} <br>
-                    Model: {{Model}} <br>
-                    Hours booked: {{HoursBooked}} <br>
-                    Booking until: {{ExpectedEndTime}} <br>
+                    Plate Number: {{plateNo}} <br>
+                    Brand: {{brand}} <br>
+                    Model: {{model}} <br>
+                    Booking Start: {{start_time}} <br>
+                    Hours Booked: {{hours_booked}} hours<br>
+                    Start Location: {{location}}
                 </div>
                 <div class="col-12 col-md-6 col-xl-4">
-                    <img :src="imgsrc" alt="Car Image" class="img-fluid">
+                    <img :src="img_url" alt="Car Image" class="img-fluid">
                 </div>
             </div>
             <!-- Reserved for google maps API to display car location and parking spots-->

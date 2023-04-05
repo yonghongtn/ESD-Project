@@ -70,8 +70,8 @@
                     </div>
                 </div>
                 <!-- Failure message when verification of current location fails -->
-                <div class="fs-4" v-show="false">
-                    QR code verification failed. Please try again.
+                <div class="fs-4" v-if="error_message != null">
+                    {{error_message}}
                 </div>
             </div>
         </div>
