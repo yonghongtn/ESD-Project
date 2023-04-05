@@ -98,7 +98,8 @@ def process_refund(report, payment_id, phone_number):
     #3 end rental period
 
     print('\n-----Invoking rental microservice-----')
-    update_rental_url = "http://localhost:5001/rental/canceltrip/" + f"{report['RentalID']}"
+    update_rental_url = "http://localhost:5001/rental/canceltrip/" + report['RentalID']
+    print(update_rental_url)
     try:
         endrental_result = invoke_http(update_rental_url, method='PUT')
         print('Rental ended successfully', endrental_result)
@@ -111,17 +112,20 @@ def process_refund(report, payment_id, phone_number):
 
 
     #4 initiate refund
-    # print('\n-----Invoking payment microservice-----')
-    # refund_url = "http://localhost:5006/refund-payment/" + f"{payment_id}"
-    # try:
-    #     refund_result = invoke_http(refund_url, method='POST')
-    #     print('Refund successful', refund_result)
+    print('\n-----Invoking payment microservice-----')
+    refund_url = "http://localhost:5006/refund-payment/" + f"{payment_id}"
+    try:
+        refund_result = invoke_http(refund_url, method='GET')
+        print('Refund successful', refund_result)
+        refund_amount = refund_result["data"]["amount"]
+        plateNo = report["PlateNo"]
 
-    # except:
-    #     return {
-    #             "code": 500,
-    #             "message": "An error occurred in the payment microservice."
-    #         }
+
+    except:
+        return {
+                "code": 500,
+                "message": "An error occurred in the payment microservice."
+            }
 
     #5 Send SMS
     # print('\n-----Invoking SMS microservice-----')
@@ -135,21 +139,26 @@ def process_refund(report, payment_id, phone_number):
     #             "code": 500,
     #             "message": "An error occurred in the SMS microservice."
     #         }
+    try:
+        message = {
+            "code": 200,
+            "PhoneNo": phone_number,
+            "message": f"Your refund of ${refund_amount/100} has been confirmed for vehicle {plateNo}. Please check your bank account these few weeks. If there are any clarification or questions you have, do feel free to contact us. Thank you."
+        }
+        content = json.dumps(message)
 
-    message = {
-        "code": 200,
-        "PhoneNo": phone_number,
-        "message": "Your refund has been confirmed and send. Please check your bank account these few weeks. If there are any clarification or questions you have, do feel free to contact us. Thank you."
-    }
-    content = json.dumps(message)
+        print('\n\n-----Publishing the (refund) message with routing_key=refund.sms-----')  
+        # Response
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="refund.sms", 
+                body=content, properties=pika.BasicProperties(delivery_mode=2))
 
-    print('\n\n-----Publishing the (refund) message with routing_key=refund.sms-----')  
-    # Response
-    amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="refund.sms", 
-            body=content, properties=pika.BasicProperties(delivery_mode=2))
-
-    return {"code": 200, "message": "Successfully processed refund"} 
-
+        
+    except:
+        return {
+                "code": 500,
+                "message": "An error occurred in the SMS microservice."
+            } 
+    return {"code": 200, "message": "Successfully processed refund."}
 
 def replace_vehicle(report, current_location):
 
