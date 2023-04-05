@@ -1,0 +1,168 @@
+version: "3.8"
+
+volumes:
+  rabbitmq_data:
+
+services:
+ 
+  #######################################################
+  # Place Booking: The Place Booking complex microservice
+  #######################################################
+  place_booking:
+    build:
+      context: ./
+      dockerfile: place_booking.Dockerfile
+    image: timtay/place_booking:1.0
+    restart: always
+    depends_on:
+      - rental
+      - rental_vehicle
+    environment:
+      rental_url: http://rental:5001/rental/
+      rentalvehicle_url: http://rentalvehicle:5003/rentalvehicle/updatebooked/ 
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5200:5200"
+ 
+  #####################################################
+  # Manage Issue: The Manage Issue complex microservice
+  #####################################################
+  manage_issue:
+    build:
+      context: ./
+      dockerfile: manage_issue.Dockerfile
+    image: timtay/manage_issue:1.0
+    restart: always
+    depends_on:
+      - rental
+      - rental_vehicle
+      - report
+      - send_text
+      - rabbitmq
+    environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
+      damaged_vehicle_url: http://rentalvehicle:5003/rentalvehicle/damage/
+      reports_url: http://reports:5002/reports/
+      cancel_rental_url: http://rental:5001/rental/canceltrip/
+      refund_url: http://server:5006/refund-payment/
+      get_vehicle_url: http://rentalvehicle:5003/rentalvehicle/
+      update_vehicle_url: http://rentalvehicle:5003/rentalvehicle/updatebooked/
+      update_rental_url: http://rental:5001/rental/
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5300:5300"
+
+  ###########################################################
+  # Parking Handler: The Parking Handler complex microservice
+  ###########################################################
+  parking_handler:
+    build:
+      context: ./
+      dockerfile: parking_handler.Dockerfile
+    image: timtay/parking_handler:1.0
+    restart: always
+    depends_on:
+      - rental
+      - rental_vehicle
+      - parking
+    environment:
+      parking_url: http://parking:5000/parkingspot/
+      rental_url: http://rental:5001/rental/endtrip/
+      vehicle_url: http://rentalvehicle:5003/rentalvehicle/updateavailable/
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5100:5100"
+
+  #####################################
+  # Rental: The RentalTrip microservice
+  #####################################
+  rental:
+    build:
+      context: ./
+      dockerfile: rental.Dockerfile
+    image: timtay/rental:0.1
+    restart: always
+    environment:
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/rentaltrip
+      PYTHONUNBUFFERED: 1
+
+  #################################################
+  # Rental Vehicle: The Rental Vehicle microservice
+  #################################################
+  rental_vehicle:
+    build:
+      context: ./
+      dockerfile: rental_vehicle.Dockerfile
+    image: timtay/rental_vehicle:0.1
+    restart: always
+    environment:
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/rental_vehicle
+      PYTHONUNBUFFERED: 1
+
+  ##################################
+  # Report: The Report microservice
+  ##################################
+  report:
+    build:
+      context: ./
+      dockerfile: report.Dockerfile
+    image: timtay/report:0.1
+    restart: always
+    environment:
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/report
+      PYTHONUNBUFFERED: 1
+
+  ###################################
+  # Parking: The Parking microservice
+  ###################################
+  parking:
+    build:
+      context: ./
+      dockerfile: parking.Dockerfile
+    image: timtay/parking:0.1
+    restart: always
+    environment:
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/desginatedparkingspot
+      PYTHONUNBUFFERED: 1
+
+  ####################################
+  # RabbitMQ: The messaging broker   
+  ####################################
+  rabbitmq:
+    image: rabbitmq:3-management
+    hostname: tim-rabbit
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes: 
+      - rabbitmq_data:/var/lib/rabbitmq
+
+  #################################################
+  # Send Text: The SMS microservice
+  #################################################
+  send_text:
+    build:
+      context: ./
+      dockerfile: send_text.Dockerfile
+    image: timtay/send_text:0.1
+    restart: always
+    depends_on:
+      - rabbitmq
+    environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
+      PYTHONUNBUFFERED: 1
+
+  ###################################
+  # Payment: The Payment microservice
+  ###################################
+  payment:
+    build:
+      context: ./
+      dockerfile: payment.Dockerfile
+    image: timtay/payment:0.1
+    restart: always
+    environment:
+      PYTHONUNBUFFERED: 1
