@@ -180,17 +180,17 @@ def replace_vehicle(report, current_location):
     
     #3 get available vehicles and choose nearest one
     print('\n-----Invoking vehicle microservice to get all vehicles-----')
-    get_vehicle_url = environ.get('get_vehicle_url')
+    get_replacements_url = environ.get('get_replacements_url') + report["PlateNo"]
     try:
         #get all vehicles
-        get_vehicle_result = invoke_http(get_vehicle_url, method='GET')
-        print('All vehicles retrieved successfully', get_vehicle_result)
-        all_vehicles = get_vehicle_result['data']['vehicles']
-        available_vehicles = []
-        for vehicle in all_vehicles:
-            if vehicle["VehicleStatus"] == "Available":
-                available_vehicles.append(vehicle)
-        print('Available vehicles retrieved successfully', available_vehicles)
+        get_replacments_result = invoke_http(get_replacements_url, method='GET')
+        print('Potential replacements retrieved', get_replacments_result)
+        if  get_replacments_result['code'] != 200:
+            return {
+                "code": 500,
+                "message": "No available vehicles of the same brand found. Please seek a refund."
+            }
+        replacements = get_replacments_result['data']['vehicles']
     except:
         return {
                 "code": 500,
@@ -199,7 +199,7 @@ def replace_vehicle(report, current_location):
 
     #compile list of available vehicle locations
     origins = []
-    for vehicle in available_vehicles:
+    for vehicle in replacements:
         origins.append({'lat': vehicle['Latitude'], 'lng': vehicle['Longitude']})
 
     startend = {"start":
@@ -227,7 +227,7 @@ def replace_vehicle(report, current_location):
     for i in range(len(distances)):
         if distances[i]["elements"][0]["status"] == "OK" and distances[i]["elements"][0]["distance"]["value"] < shortest_distance:
             shortest_distance = distances[i]["elements"][0]["distance"]["value"]
-            closest_vehicle = available_vehicles[i]
+            closest_vehicle = replacements[i]
             
     print('Closest vehicle retrieved successfully', closest_vehicle)
 
@@ -251,7 +251,7 @@ def replace_vehicle(report, current_location):
         update_rental = invoke_http(update_rental_url, method='PUT')
         print('Rental record updated successfully', update_rental)
         #Get car model and brand of new car
-        for vehicle in available_vehicles:
+        for vehicle in replacements:
             if vehicle["PlateNo"] == closest_vehicle["PlateNo"]:
                 newCarBrand = vehicle["Brand"]
                 newCarModel = vehicle["Model"]
