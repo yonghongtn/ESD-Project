@@ -120,8 +120,8 @@ def processParkingHandler(parking):
     print(parking_spots_with_distances)
 
     #if driver is not within 50 of any parking spot, return error
-    if all(distance > 50 for distance in distances_to_return):
-        return {"code": 400, "message": "Driver is not within 50m of any parking spot"}
+    if all(distance > 100 for distance in distances_to_return):
+        return {"code": 400, "message": "Driver is not within 100m of any parking spot"}
     
     #3. End trip by calling the RentalTrip microservice
     try:
@@ -163,7 +163,30 @@ def processParkingHandler(parking):
                 "message": "An error occurred in the RentalVehicle microservice."
             }
     #5. Return back success message
-    return {"code": 200, "message": "Successfully ended trip"}
+    start_location_code = rental_return['data']['StartLocation']
+    end_location_code = rental_return['data']['EndLocation']
+    #find start and end location name
+    start_location = next((item for item in parking_spots if item["Code"] == start_location_code), None)
+    start_location = start_location['Name']
+    end_location = next((item for item in parking_spots if item["Code"] == end_location_code), None)
+    end_location = end_location['Name']
+    #start time and end time
+    start_time = rental_return['data']['StartTime']
+    end_time = rental_return['data']['EndTime']
+    vehicle_plate = rental_return['data']['PlateNo']
+    totalfare = rental_return['data']['TotalFare']/100
+
+    return {"code": 200, 
+            "message": "Successfully ended trip",
+            "data": {
+                "start_location": start_location,
+                "end_location": end_location,
+                "start_time": start_time,
+                "end_time": end_time,
+                "vehicle_plate": vehicle_plate,
+                "totalfare": totalfare
+                }
+            }
 
 """ 
 For handling parking using coordinates
@@ -267,7 +290,32 @@ def processParkingHandlerQR(parking):
                 "message": "An error occurred in the RentalVehicle microservice."
             }
     #5. Return back success message
-    return {"code": 200, "message": "Successfully ended trip"}
+
+    start_location_code = rental_return['data']['StartLocation']
+    end_location_code = rental_return['data']['EndLocation']
+
+    #find start and end location name
+    start_location = next((item for item in parking_spots if item["Code"] == start_location_code), None)
+    start_location = start_location['Name']
+    end_location = next((item for item in parking_spots if item["Code"] == end_location_code), None)
+    end_location = end_location['Name']
+    #start time and end time
+    start_time = rental_return['data']['StartTime']
+    end_time = rental_return['data']['EndTime']
+    vehicle_plate = rental_return['data']['PlateNo']
+    totalfare = rental_return['data']['TotalFare']/100
+
+    return {"code": 200, 
+            "message": "Successfully ended trip",
+            "data": {
+                "start_location": start_location,
+                "end_location": end_location,
+                "start_time": start_time,
+                "end_time": end_time,
+                "vehicle_plate": vehicle_plate,
+                "totalfare": totalfare
+                }
+            }
 
 # Execute this program if it is run as a main script (not by 'import')
 if __name__ == "__main__":

@@ -4,7 +4,18 @@ volumes:
   rabbitmq_data:
 
 services:
- 
+  ##########
+  # Microservice Port Numbers
+  # Manage issue : 5300
+  # Parking Handler : 5100
+  # Place Booking : 5200
+  # Rental Vehicle : 5003
+  # Payment : 5006
+  # Report : 5002
+  # Rental : 5001
+  # Parking : 5000
+  ##########
+
   #######################################################
   # Place Booking: The Place Booking complex microservice
   #######################################################
@@ -12,14 +23,14 @@ services:
     build:
       context: ./
       dockerfile: place_booking.Dockerfile
-    image: timtay/place_booking:1.0
+    image: jamestanyh/place_booking:1.0
     restart: always
     depends_on:
       - rental
-      - rental_vehicle
+      - rentalvehicle
     environment:
-      rental_url: http://rental:5001/rental/
-      rentalvehicle_url: http://rentalvehicle:5003/rentalvehicle/updatebooked/ 
+      rental_url: http://rental:5001/rental
+      rentalvehicle_url: http://rentalvehicle:5003/rentalvehicle/updatebooked/
       PYTHONUNBUFFERED: 1
     ports:
       - "5200:5200"
@@ -31,11 +42,11 @@ services:
     build:
       context: ./
       dockerfile: manage_issue.Dockerfile
-    image: timtay/manage_issue:1.0
+    image: jamestanyh/manage_issue:1.0
     restart: always
     depends_on:
       - rental
-      - rental_vehicle
+      - rentalvehicle
       - report
       - send_text
       - rabbitmq
@@ -43,10 +54,10 @@ services:
       rabbit_host: rabbitmq
       rabbit_port: 5672
       damaged_vehicle_url: http://rentalvehicle:5003/rentalvehicle/damage/
-      reports_url: http://reports:5002/reports/
+      report_url: http://report:5002/report
       cancel_rental_url: http://rental:5001/rental/canceltrip/
-      refund_url: http://server:5006/refund-payment/
-      get_vehicle_url: http://rentalvehicle:5003/rentalvehicle/
+      refund_url: http://payment:5006/refund-payment/
+      get_vehicle_url: http://rentalvehicle:5003/rentalvehicle
       update_vehicle_url: http://rentalvehicle:5003/rentalvehicle/updatebooked/
       update_rental_url: http://rental:5001/rental/
       PYTHONUNBUFFERED: 1
@@ -60,14 +71,14 @@ services:
     build:
       context: ./
       dockerfile: parking_handler.Dockerfile
-    image: timtay/parking_handler:1.0
+    image: jamestanyh/parking_handler:1.0
     restart: always
     depends_on:
       - rental
-      - rental_vehicle
+      - rentalvehicle
       - parking
     environment:
-      parking_url: http://parking:5000/parkingspot/
+      parking_url: http://parking:5000/parkingspot
       rental_url: http://rental:5001/rental/endtrip/
       vehicle_url: http://rentalvehicle:5003/rentalvehicle/updateavailable/
       PYTHONUNBUFFERED: 1
@@ -81,7 +92,7 @@ services:
     build:
       context: ./
       dockerfile: rental.Dockerfile
-    image: timtay/rental:0.1
+    image: jamestanyh/rental:0.1
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/rentaltrip
@@ -90,15 +101,17 @@ services:
   #################################################
   # Rental Vehicle: The Rental Vehicle microservice
   #################################################
-  rental_vehicle:
+  rentalvehicle:
     build:
       context: ./
       dockerfile: rental_vehicle.Dockerfile
-    image: timtay/rental_vehicle:0.1
+    image: jamestanyh/rentalvehicle:0.1
     restart: always
     environment:
-      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/rental_vehicle
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/rentalvehicle
       PYTHONUNBUFFERED: 1
+    ports:
+      - "5003:5003"
 
   ##################################
   # Report: The Report microservice
@@ -107,10 +120,10 @@ services:
     build:
       context: ./
       dockerfile: report.Dockerfile
-    image: timtay/report:0.1
+    image: jamestanyh/report:0.1
     restart: always
     environment:
-      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/report
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/rentalreports
       PYTHONUNBUFFERED: 1
 
   ###################################
@@ -120,14 +133,14 @@ services:
     build:
       context: ./
       dockerfile: parking.Dockerfile
-    image: timtay/parking:0.1
+    image: jamestanyh/parking:0.1
     restart: always
     environment:
-      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/desginatedparkingspot
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/designatedparkingspot
       PYTHONUNBUFFERED: 1
 
   ####################################
-  # RabbitMQ: The messaging broker   
+  # RabbitMQ: The messaging broker  
   ####################################
   rabbitmq:
     image: rabbitmq:3-management
@@ -146,7 +159,7 @@ services:
     build:
       context: ./
       dockerfile: send_text.Dockerfile
-    image: timtay/send_text:0.1
+    image: jamestanyh/send_text:0.1
     restart: always
     depends_on:
       - rabbitmq
@@ -154,6 +167,10 @@ services:
       rabbit_host: rabbitmq
       rabbit_port: 5672
       PYTHONUNBUFFERED: 1
+      ## Twilio Credentials, please change here
+      TWILIO_ACCOUNT_SID: AC3c575ead1cff2b389735754170da1276
+      TWILIO_AUTH_TOKEN:  40e14491d3191a8a683914e6da617c65
+      TWILIO_PHONE_NUMBER: +15855801259
 
   ###################################
   # Payment: The Payment microservice
@@ -162,7 +179,9 @@ services:
     build:
       context: ./
       dockerfile: payment.Dockerfile
-    image: timtay/payment:0.1
+    image: jamestanyh/payment:0.1
     restart: always
     environment:
       PYTHONUNBUFFERED: 1
+    ports:
+      - "5006:5006"

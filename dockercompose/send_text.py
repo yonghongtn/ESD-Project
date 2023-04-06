@@ -1,9 +1,10 @@
 # /usr/bin/env python
 # Download the twilio-python library from twilio.com/docs/libraries/python
-import os
+from os import environ
 from twilio.rest import Client
 import amqp_setup
 import json
+import os
 
 
 from flask_cors import CORS
@@ -39,10 +40,10 @@ def send_txt_message (destination: str, message: str) :
     # To set up environmental variables, see http://twil.io/secure
 
     # Need to pre set environment variables in windows computer first in order to work 
-    account_sid = os.environ['TWILIO_ACCOUNT_SID']
-    auth_token = os.environ['TWILIO_AUTH_TOKEN']
+    account_sid = environ.get('TWILIO_ACCOUNT_SID')
+    auth_token = environ.get('TWILIO_AUTH_TOKEN')
     client = Client(account_sid, auth_token)
-    message = client.messages.create(body=message, from_="+1 585 639 4954", to=destination)
+    message = client.messages.create(body=message, from_=environ.get('TWILIO_PHONE_NUMBER'), to=destination)
 
 # @app.route('/Twilio/send_txt_message/<destination>')
 def main(body) :
