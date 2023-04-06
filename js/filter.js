@@ -67,7 +67,7 @@ const app = Vue.createApp({
             try {
                 const response =
                  await fetch(
-                   serviceURL, { method: 'GET' }
+                   serviceURL, { method: 'GET'}
                 );
                 const result = await response.json();
                  if (response.status === 200) {

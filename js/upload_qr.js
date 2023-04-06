@@ -41,6 +41,9 @@ const app = Vue.createApp({
             if (parking_result.code == 200){
                 //clear session storage
                 sessionStorage.clear()
+                //store variables in session storage
+                var message = "Start Location: " + parking_result.data.start_location + ", End Location: " + parking_result.data.end_location + ", Start Time: " + parking_result.data.start_time + ", End Time: " + parking_result.data.end_time + ", Total Fare: $" + parking_result.data.totalfare
+                sessionStorage.setItem("message", message)
                 window.location.href = "trip_ended.html"
             }
             else{

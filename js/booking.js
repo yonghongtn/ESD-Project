@@ -55,13 +55,15 @@ const app = Vue.createApp({
                         body: JSON.stringify(content_body),
                         headers: {
                             'Content-Type': 'application/json'
-                        }
+                        },
                     })
                     var parking_result = await parking_response.json()
                     console.log(parking_result)
                     if (parking_result.code == 200){
                         //clear session storage
                         sessionStorage.clear()
+                        var message = "Start Location: " + parking_result.data.start_location + ", End Location: " + parking_result.data.end_location + ", Start Time: " + parking_result.data.start_time + ", End Time: " + parking_result.data.end_time + ", Total Fare: " + parking_result.data.totalfare
+                        sessionStorage.setItem("message", message)
                         //redirect to trip ended page
                         window.location.href = "trip_ended.html"
                     }
@@ -80,7 +82,7 @@ const app = Vue.createApp({
                 try {
                     const response =
                      await fetch(
-                       serviceURL, { method: 'GET' }
+                       serviceURL, { method: 'GET'}
                     );
                     const result = await response.json();
                     console.log(result)
