@@ -36,7 +36,7 @@ Longitude float not null,
 ParkingSpotID int not null);
 
 -- insert values into vehicle table
-INSERT INTO vehicle VALUES
+INSERT INTO RentalVehicle.vehicle VALUES
 ('SGA2345C', 'Kia', 'Nitro Hybrid', 'Available', 'SCIS', 1000, 'price_1MsPOIFZwLHtEN8Wtw0f4SOT',  1.42681, 103.836,1),
 ('SGK4321D', 'Honda', 'Civic', 'Available', 'LKCSOB', 2000, 'price_1MsPToFZwLHtEN8WZIbuZs75', 1.40145, 103.818,2),
 ('SGL9987H', 'Mercedes-Benz', 'GLA-Class', 'Available', 'YPHSOL', 3000, 'price_1MsPeCFZwLHtEN8WtHaJkjbm', 1.37427, 103.846,3),
@@ -74,8 +74,8 @@ use DesignatedParkingSpot;
 create table DesignatedParkingSpot.parkingSpot
 (Code int not null auto_increment primary key,
 Name varchar(255) not null,
-Latitude float not null,
-Longitude float not null);
+Latitude float(12, 7) not null,
+Longitude float(12, 7) not null);
 
 -- insert values into parkingspot table
 INSERT INTO DesignatedParkingSpot.parkingspot(name, latitude, longitude) VALUES
