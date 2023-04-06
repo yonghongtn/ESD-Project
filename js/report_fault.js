@@ -53,7 +53,7 @@ const app = Vue.createApp({
                             method: 'POST',
                             body: JSON.stringify(submit_to_manage_issue),
                             headers: {
-                                'Content-Type': 'application/json'
+                                'Content-Type': 'application/json',
                             },
                     })
                 const report_result = await report_response.json()
@@ -69,7 +69,7 @@ const app = Vue.createApp({
                     sessionStorage.setItem("vehicle_to_view_location", report_result.Location)
                 }
                 //Refund successful
-                else if (report_result.message == "Successfully processed refund."){
+                else{
                     //clear session storage
                     var message_to_set = "Please check your SMS for details of your refund for your vehicle " + sessionStorage.getItem("vehicle_to_view_plateno")
                     sessionStorage.clear()
@@ -101,7 +101,7 @@ const app = Vue.createApp({
                                 method: 'POST',
                                 body: JSON.stringify(submit_to_manage_issue),
                                 headers: {
-                                    'Content-Type': 'application/json'
+                                    'Content-Type': 'application/json',
                                 },
                         })
                     const report_result = await report_response.json()

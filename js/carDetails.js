@@ -19,7 +19,7 @@ const app = Vue.createApp({
             /* Call stripe flask app */
             //console.log({"price": this.PriceID, "quantity": this.hours_booked})
             var fetch_url = "http://localhost:5006/create-checkout-session" + "/" + this.PriceID + "/" + this.hours_booked
-            const response = await fetch(fetch_url)
+            const response = await fetch(fetch_url, { method: 'GET'})
             const result = await response.json();
             console.log(result.url)
             //store session id in session storage

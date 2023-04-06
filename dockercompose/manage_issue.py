@@ -110,36 +110,27 @@ def process_refund(report, payment_id, phone_number):
 
 
     #4 initiate refund
-    # print('\n-----Invoking payment microservice-----')
-    # refund_url = environ.get('refund_url') + f"{payment_id}"
-    # try:
-    #     refund_result = invoke_http(refund_url, method='POST')
-    #     print('Refund successful', refund_result)
+    print('\n-----Invoking payment microservice-----')
+    refund_url = environ.get('refund_url') + f"{payment_id}"
+    try:
+        refund_result = invoke_http(refund_url, method='GET')
+        print('Refund successful', refund_result)
 
-    # except:
-    #     return {
-    #             "code": 500,
-    #             "message": "An error occurred in the payment microservice."
-    #         }
+    except:
+         return {
+                 "code": 500,
+                 "message": "An error occurred in the payment microservice."
+             }
 
     #5 Send SMS
-    # print('\n-----Invoking SMS microservice-----')
-    # sms_url = "http://localhost:5005/Twilio/send_txt_message/" + f"{report['PhoneNo']}"
-    # try:
-    #     sms_result = invoke_http(sms_url, method='GET')
-    #     print('SMS Notification successful', sms_result)
-
-    # except:
-    #     return {
-    #             "code": 500,
-    #             "message": "An error occurred in the SMS microservice."
-    #         }
-
+    amount_refunded = refund_result["data"]["amount"]/100
+    car_plateno = report["PlateNo"]
     message = {
         "code": 200,
         "PhoneNo": phone_number,
-        "message": "Your refund has been confirmed and send. Please check your bank account these few weeks. If there are any clarification or questions you have, do feel free to contact us. Thank you."
+        "message": f"Your refund amount of ${amount_refunded} for car {car_plateno} has been confirmed. Please check your bank account these few weeks. If there are any clarification or questions you have, do feel free to contact us. Thank you."
     }
+    print("message: ", message)
     content = json.dumps(message)
 
     print('\n\n-----Publishing the (refund) message with routing_key=refund.sms-----')  
@@ -266,4 +257,4 @@ def replace_vehicle(report, current_location):
     return {"code": 200, "message": "Successfully processed replacement", "booking": update_rental, "Brand": newCarBrand, "Model": newCarModel, "Location": newLocation}
 
 if __name__ == "__main__":
-    app.run(port=5300, debug=True)
+    app.run(host="0.0.0.0",port=5300, debug=True)
