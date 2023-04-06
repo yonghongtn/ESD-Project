@@ -1,3 +1,4 @@
+
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
@@ -172,30 +173,6 @@ def update_vehicle_available(plateno):
                         },
                         "message": "Vehicle not found."
                     }
-                ), 404    
-
-@app.route("/rentalvehicle/get_replacements/<plateno>")
-def get_replacements(plateno):
-    firstvehicle = Vehicle.query.filter_by(plateno=plateno).first()
-    model = firstvehicle.model
-    potential_replacements = Vehicle.query.filter_by(model=model, vehiclestatus='Available').all()
-    if len(potential_replacements):
-        return jsonify(
-            {
-                "code": 200,
-                "data":{
-                    
-                    "vehicles": [vehicle.json() for vehicle in potential_replacements]
-
-                }
-            }
-        )
-    return jsonify(
-        {
-            "code": 404,
-            "message": "No potential replacements found."
-        }  
-    ), 404
-
+                ), 404      
 if __name__ == '__main__':
     app.run(host="0.0.0.0",port=5003,debug=True)

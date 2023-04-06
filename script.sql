@@ -38,15 +38,15 @@ ParkingSpotID int not null);
 -- insert values into vehicle table
 INSERT INTO RentalVehicle.vehicle VALUES
 ('SGA2345C', 'Kia', 'Nitro Hybrid', 'Available', 'SCIS', 1000, 'price_1MsPOIFZwLHtEN8Wtw0f4SOT',  1.42681, 103.836,1),
-('SGK4321D', 'Honda', 'Civic', 'Available', 'LKCSOB', 2000, 'price_1MsPToFZwLHtEN8WZIbuZs75', 1.40145, 103.818,2),
-('SGL9987H', 'Mercedes-Benz', 'GLA-Class', 'Available', 'YPHSOL', 3000, 'price_1MsPeCFZwLHtEN8WtHaJkjbm', 1.37427, 103.846,3),
-('SGX1234A', 'Hyundai', 'Avante', 'Available', 'SOA', 4000,'price_1MsPfoFZwLHtEN8WZXrbHjG9', 1.29924, 103.854,4),
-('SGY9876B', 'Toyota', 'Wish', 'Available', 'SOSS', 5000,'price_1MsPiEFZwLHtEN8WN99SAd2O', 1.2968, 103.845,5),
-('SGT7420F', 'Toyota', 'Wish', 'Available', 'LCKSOB', 5000,'price_1MsPiEFZwLHtEN8WN99SAd2O', 1.40145, 103.818,2),
-('SGX4321E', 'Honda', 'Civic', 'Available', 'YPHSOL', 2000, 'price_1MsPToFZwLHtEN8WZIbuZs75', 1.37427, 103.846,3),
-('SGC9987G', 'Mercedes-Benz', 'GLA-Class', 'Available', 'LCKSOB', 3000, 'price_1MsPeCFZwLHtEN8WtHaJkjbm', 1.40145, 103.818,2),
-('SGJ1234I', 'Hyundai', 'Avante', 'Available', 'SOSS', 4000,'price_1MsPfoFZwLHtEN8WZXrbHjG9', 1.2968, 103.845,5),
-('SGA7420J', 'Toyota', 'Wish', 'Available', 'SOA', 5000,'price_1MsPiEFZwLHtEN8WN99SAd2O', 1.29924, 103.854,4);
+('SGK4321D', 'Honda', 'Civic', 'Available', 'LKCSOB', 1000, 'price_1MtuGiFZwLHtEN8W2FE5Ezaq', 1.40145, 103.818,2),
+('SGL9987H', 'Mercedes-Benz', 'GLA-Class', 'Available', 'YPHSOL', 1000, 'price_1MtuGDFZwLHtEN8WBRtnADir', 1.37427, 103.846,3),
+('SGX1234A', 'Hyundai', 'Avante', 'Available', 'SOA', 1000,'price_1MtuFiFZwLHtEN8WnJLBzC9L', 1.29924, 103.854,4),
+('SGY9876B', 'Toyota', 'Wish', 'Available', 'SOSS', 1000,'price_1MtuEYFZwLHtEN8WIOe4HoWB', 1.2968, 103.845,5),
+('SGT7420F', 'Toyota', 'Wish', 'Available', 'LCKSOB', 1000,'price_1MtuEYFZwLHtEN8WIOe4HoWB', 1.40145, 103.818,2),
+('SGX4321E', 'Honda', 'Civic', 'Available', 'YPHSOL', 1000, 'price_1MtuGiFZwLHtEN8W2FE5Ezaq', 1.37427, 103.846,3),
+('SGC9987G', 'Mercedes-Benz', 'GLA-Class', 'Available', 'LCKSOB', 1000, 'price_1MtuGDFZwLHtEN8WBRtnADir', 1.40145, 103.818,2),
+('SGJ1234I', 'Hyundai', 'Avante', 'Available', 'SOSS', 1000,'price_1MtuFiFZwLHtEN8WnJLBzC9L', 1.2968, 103.845,5),
+('SGA7420J', 'Toyota', 'Wish', 'Available', 'SOA', 1000,'price_1MtuEYFZwLHtEN8WIOe4HoWB', 1.29924, 103.854,4);
 
 -- create RentalTrip DB
 drop schema if exists RentalTrip;

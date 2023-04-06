@@ -57,7 +57,7 @@ services:
       report_url: http://report:5002/report
       cancel_rental_url: http://rental:5001/rental/canceltrip/
       refund_url: http://payment:5006/refund-payment/
-      get_replacements_url: http://rentalvehicle:5003/rentalvehicle/get_replacements/
+      get_vehicle_url: http://rentalvehicle:5003/rentalvehicle
       update_vehicle_url: http://rentalvehicle:5003/rentalvehicle/updatebooked/
       update_rental_url: http://rental:5001/rental/
       PYTHONUNBUFFERED: 1
@@ -169,7 +169,7 @@ services:
       PYTHONUNBUFFERED: 1
       ## Twilio Credentials, please change here
       TWILIO_ACCOUNT_SID: AC3c575ead1cff2b389735754170da1276
-      TWILIO_AUTH_TOKEN:  40e14491d3191a8a683914e6da617c65
+      TWILIO_AUTH_TOKEN:  7c975ab5b38c6b96c96cbc22ef7a98dc
       TWILIO_PHONE_NUMBER: +15855801259
 
   ###################################

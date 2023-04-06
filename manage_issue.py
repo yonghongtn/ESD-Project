@@ -225,6 +225,7 @@ def replace_vehicle(report, current_location):
     #get distances from browser location to all available vehicles
     try:
         distance = gmaps.distance_matrix(origins, destination, mode='walking')
+        print(distance)
     except:
         return {
                 "code": 500,
