@@ -57,7 +57,7 @@ services:
       report_url: http://report:5002/report
       cancel_rental_url: http://rental:5001/rental/canceltrip/
       refund_url: http://payment:5006/refund-payment/
-      get_vehicle_url: http://rentalvehicle:5003/rentalvehicle
+      get_replacements_url: http://rentalvehicle:5003/rentalvehicle/get_replacements/
       update_vehicle_url: http://rentalvehicle:5003/rentalvehicle/updatebooked/
       update_rental_url: http://rental:5001/rental/
       PYTHONUNBUFFERED: 1
