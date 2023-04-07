@@ -111,17 +111,26 @@ const app = Vue.createApp({
                     console.log(report_result)
                     
                     //Replacement successful
-                    if (report_result.message == "Successfully processed replacement"){
-                        // Display outcome on screen
-                        this.outcome = "Successfully processed replacement, please go back to booking page to view new car details"
-                        sessionStorage.setItem("vehicle_to_view_plateno", report_result.booking.data.PlateNo)
-                        sessionStorage.setItem("vehicle_to_view_model", report_result.Model)
-                        sessionStorage.setItem("vehicle_to_view_brand", report_result.Brand)
-                        sessionStorage.setItem("vehicle_to_view_location", report_result.Location)
-                    }
-                    //Refund successful
-                    else if (report_result.message == "Successfully processed refund"){
-                        //window.location.href = "booking.html"
+                    //Replacement successful
+                if (report_result.code != 200){
+                    this.submission_error_message = report_result.message
+                }
+                else if (report_result.message == "Successfully processed replacement"){
+                    // Display outcome on screen
+                    this.outcome = "Successfully processed replacement, please go back to booking page to view new car details"
+                    sessionStorage.setItem("vehicle_to_view_plateno", report_result.booking.data.PlateNo)
+                    sessionStorage.setItem("vehicle_to_view_model", report_result.Model)
+                    sessionStorage.setItem("vehicle_to_view_brand", report_result.Brand)
+                    sessionStorage.setItem("vehicle_to_view_location", report_result.Location)
+                }
+                //Refund successful
+                else if (report_result.message == "Successfully processed refund"){
+                    //clear session storage
+                    var message_to_set = "Please check your SMS for details of your refund for your vehicle " + sessionStorage.getItem("vehicle_to_view_plateno")
+                    sessionStorage.clear()
+                    sessionStorage.setItem("message", message_to_set)
+                    window.location.href = "trip_ended.html"
+                }
                     }
                 }  
                 
