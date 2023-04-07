@@ -43,7 +43,7 @@ def create_checkout_session(priceid, quantity):
                 ],
             mode='payment',
             success_url='http://localhost/ESDProject/booking.html',
-            cancel_url='http://localhost/ESDProject/booking.html',
+            cancel_url='http://localhost/ESDProject/cardetails.html',
             )
         return jsonify({"sessionId": checkout_session['id'],"url": checkout_session['url'],"object": checkout_session})
 

@@ -113,7 +113,17 @@ def update_vehicle_damaged(plateno):
                     },
                     "message": "Vehicle not found."
                 }
-            ), 404
+            ), 500
+    else:
+        return jsonify(
+            {
+                "code": 404,
+                "data": {
+                    "plateno": plateno
+                },
+                "message": "Vehicle not found."
+            }
+        ), 404
 
 #Update vehicle status to booked
 @app.route("/rentalvehicle/updatebooked/<plateno>", methods=['PUT'])
@@ -173,6 +183,16 @@ def update_vehicle_available(plateno):
                         },
                         "message": "Vehicle not found."
                     }
-                ), 404      
+                ), 500
+    else:
+        return jsonify(
+            {
+                "code": 404,
+                "data": {
+                    "plateno": plateno
+                },
+                "message": "Vehicle not found."
+            }
+        ), 404
 if __name__ == '__main__':
     app.run(host="0.0.0.0",port=5003,debug=True)

@@ -168,9 +168,9 @@ services:
       rabbit_port: 5672
       PYTHONUNBUFFERED: 1
       ## Twilio Credentials, please change here
-      TWILIO_ACCOUNT_SID: AC3c575ead1cff2b389735754170da1276
-      TWILIO_AUTH_TOKEN:  
-      TWILIO_PHONE_NUMBER: +15855801259
+      TWILIO_ACCOUNT_SID: 
+      TWILIO_AUTH_TOKEN: 
+      TWILIO_PHONE_NUMBER: 
 
   ###################################
   # Payment: The Payment microservice
