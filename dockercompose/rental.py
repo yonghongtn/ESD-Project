@@ -115,7 +115,7 @@ def end_trip(RentalID, EndLocation):
     if trip:
         try:
             trip.EndLocation = EndLocation
-            trip.EndTime = datetime.now()
+            trip.EndTime = func.now()
             db.session.commit()
             return jsonify(
                 {
