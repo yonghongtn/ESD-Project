@@ -169,7 +169,7 @@ services:
       PYTHONUNBUFFERED: 1
       ## Twilio Credentials, please change here
       TWILIO_ACCOUNT_SID: AC3c575ead1cff2b389735754170da1276
-      TWILIO_AUTH_TOKEN:  7c975ab5b38c6b96c96cbc22ef7a98dc
+      TWILIO_AUTH_TOKEN:  
       TWILIO_PHONE_NUMBER: +15855801259
 
   ###################################
