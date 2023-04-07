@@ -131,8 +131,8 @@ const app = Vue.createApp({
                     sessionStorage.setItem("message", message_to_set)
                     window.location.href = "trip_ended.html"
                 }
-                    }
-                }  
+            
+            }  
                 
             }   
         },
